@@ -54,3 +54,6 @@ Thumbs.db
 *.g.dart
 *.mocks.dart
 
+# FVM Version Cache
+.fvm/
+example/android/local.properties
