@@ -103,4 +103,4 @@ This is because Mockitos argument matchers are nullable, however the parameters 
 
 ## Problems
 
-If something isn't working, preferably report it [here](https://github.com/Apadmi-Engineering/Mirage/issues). Contributions are welcome!
+If something isn't working, preferably report it [here](https://github.com/Apadmi-Engineering/mirage/issues). Contributions are welcome!
