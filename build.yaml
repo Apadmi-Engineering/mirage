@@ -1,0 +1,10 @@
+builders:
+  mirageBuilder:
+    import: "package:mirage/src/builder.dart"
+    builder_factories: ["buildMirages"]
+    build_extensions: {".dart": [".mirage.dart", ".debug.mirage.dart"]}
+    build_to: source
+    auto_apply: dependents
+    defaults:
+      generate_for: ["test/**"]
+    applies_builders: ["riverpod_generator|riverpod_generator"]

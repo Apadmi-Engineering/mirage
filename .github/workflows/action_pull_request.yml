@@ -1,0 +1,27 @@
+name: Pull Request
+
+on: [workflow_dispatch, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: cirrusci/flutter:latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        if: steps.filter.outputs.flutter == 'true'
+        with:
+          flutter-version: '3.32.2'
+          channel: 'stable'
+      - name: Download dependencies and execute code generation
+        run: |
+          flutter pub get
+          dart run build_runner build --delete-conflicting-outputs
+      - name: Run unit tests
+        run: |
+          flutter test test/unit
+      - name: Run golden tests
+        run: |
+          dart run build_runner test -- test/golden
