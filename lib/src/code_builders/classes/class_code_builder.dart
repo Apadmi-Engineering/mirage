@@ -1,4 +1,4 @@
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:code_builder/code_builder.dart';
 import 'package:mirage/src/models/errors.dart';
@@ -9,8 +9,8 @@ abstract class ClassCodeBuilderDelegate {
 }
 
 mixin ClassCodeBuilderUtils {
-  Element getElement(DartType type) {
-    final element = type.element;
+  Element2 getElement(DartType type) {
+    final element = type.element3;
     if (element == null) {
       throw ElementNotFoundError(type);
     }
@@ -19,26 +19,26 @@ mixin ClassCodeBuilderUtils {
 
   String getTypeName(DartType type) {
     final element = getElement(type);
-    final typeName = element.name;
+    final typeName = element.name3;
     if (typeName == null) {
       throw TypeNameNotFoundError(element, type);
     }
     return typeName;
   }
 
-  LibraryElement getLibraryForType(DartType type) {
+  LibraryElement2 getLibraryForType(DartType type) {
     final element = getElement(type);
-    final library = element.library;
+    final library = element.library2;
     if (library == null) {
       throw LibraryNotFoundError(type);
     }
     return library;
   }
 
-  ClassElement getClassForType(DartType type) {
+  ClassElement2 getClassForType(DartType type) {
     final library = getLibraryForType(type);
     final classElement =
-        LibraryReader(library).element.getClass(getTypeName(type));
+        LibraryReader(library).element.getClass2(getTypeName(type));
     if (classElement == null) {
       throw ClassNotFound(type);
     }
