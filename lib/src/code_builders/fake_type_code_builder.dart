@@ -1,4 +1,4 @@
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:code_builder/code_builder.dart';
 import 'package:mirage/src/import_finder.dart';
@@ -12,12 +12,12 @@ class FakeTypeCodeBuilder {
   const FakeTypeCodeBuilder(this._libraryReader, this._importFinder);
 
   Class? buildFakeClass(FakeType fakeType) {
-    final originalElement = fakeType.originalType.element;
+    final originalElement = fakeType.originalType.element3;
     if (originalElement == null) {
       return null;
     }
     final originalImport = _libraryReader.pathToElement(originalElement);
-    final originalName = originalElement.name;
+    final originalName = originalElement.name3;
     if (originalName == null) {
       return null;
     }
@@ -61,38 +61,38 @@ class FakeTypeCodeBuilder {
       throw StateError("Can't mock recursive types! Offending type "
           "${type.getDisplayString()}");
     }
-    final element = type.element;
+    final element = type.element3;
     return switch (element) {
       null => FakeType(element, type, null, []),
-      InterfaceElement(library: LibraryElement(isDartCore: true)) => FakeType(
+      InterfaceElement2(library2: LibraryElement2(isDartCore: true)) => FakeType(
           element,
           type,
           null,
           _getTypeParameters(type, recursionDepth + 1),
         ),
-      InterfaceElement(library: LibraryElement(isDartAsync: true)) => FakeType(
+      InterfaceElement2(library2: LibraryElement2(isDartAsync: true)) => FakeType(
           element,
           type,
           null,
           _getTypeParameters(type, recursionDepth + 1),
         ),
-      EnumElement() => FakeType(element, type, null, []),
-      ClassElement(isFinal: true) => FakeType(
+      EnumElement2() => FakeType(element, type, null, []),
+      ClassElement2(isFinal: true) => FakeType(
           element,
           type,
           null,
           _getTypeParameters(type, recursionDepth + 1),
         ),
-      ClassElement(isSealed: true) => FakeType(
+      ClassElement2(isSealed: true) => FakeType(
           element,
           type,
           null,
           _getTypeParameters(type, recursionDepth + 1),
         ),
-      InterfaceElement(:final name, isPublic: true) => FakeType(
+      InterfaceElement2(:final name3, isPublic: true) => FakeType(
           element,
           type,
-          "_Fake$name",
+          "_Fake$name3",
           _getTypeParameters(type, recursionDepth + 1),
         ),
       _ => FakeType(
@@ -124,7 +124,7 @@ class FakeTypeCodeBuilder {
     final element = fakeType.element;
     if (element == null) {
       return null;
-    } else if (element case InterfaceElement(isFutureOrStream: true)) {
+    } else if (element case InterfaceElement2(isFutureOrStream: true)) {
       return getStubValue(
           fakeType.parameterTypes!.first, methodName, positionalArgs);
     } else {
@@ -142,8 +142,8 @@ class FakeTypeCodeBuilder {
   String _allocateType(FakeType type, String Function(Reference) allocate) {
     final parameterTypes = type.parameterTypes;
     final topLevelTypeCode = allocate(refer(
-      type.originalType.element!.name!,
-      _importFinder.getImportUrl(type.originalType.element!.library),
+      type.originalType.element3!.name3!,
+      _importFinder.getImportUrl(type.originalType.element3!.library2),
     ));
     if (parameterTypes == null || parameterTypes.isEmpty) {
       return topLevelTypeCode;
@@ -153,7 +153,7 @@ class FakeTypeCodeBuilder {
   }
 }
 
-extension on InterfaceElement {
+extension on InterfaceElement2 {
   bool get isFutureOrStream =>
       thisType.isDartAsyncStream ||
       thisType.isDartAsyncFutureOr ||
