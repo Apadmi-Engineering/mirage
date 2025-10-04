@@ -36,13 +36,13 @@ class TypeReferencer {
         (builder) => builder
           ..symbol = type.element.name
           ..isNullable = forceNullable || _typeSystem.isNullable(type)
-          ..url = _importFinder.getImportUrl(type.element)
+          ..url = _importFinder.getImportUrl(type.element3)
           ..types.addAll(type.typeArguments.map(obtainReferenceForType)),
       );
     }
     return refer(
       type.getDisplayString(),
-      _importFinder.getImportUrl(type.element),
+      _importFinder.getImportUrl(type.element3),
     );
   }
 }
