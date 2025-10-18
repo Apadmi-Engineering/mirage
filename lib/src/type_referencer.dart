@@ -34,7 +34,7 @@ class TypeReferencer {
     } else if (type is analyzer.InterfaceType) {
       return TypeReference(
         (builder) => builder
-          ..symbol = type.element.name
+          ..symbol = type.element3.name3
           ..isNullable = forceNullable || _typeSystem.isNullable(type)
           ..url = _importFinder.getImportUrl(type.element3)
           ..types.addAll(type.typeArguments.map(obtainReferenceForType)),
