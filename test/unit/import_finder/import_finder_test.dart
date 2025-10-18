@@ -1,18 +1,17 @@
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:mirage/src/import_finder.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:test/test.dart';
 
-import '../code_builders/fake_type_code_builder/fake_type_code_builder_test.dart';
 import '../util/stubbing_utils.dart';
 import 'import_finder_test.mocks.dart';
 
 @GenerateNiceMocks([
   MockSpec<LibraryReader>(),
-  MockSpec<Element>(),
-  MockSpec<LibraryElement>(),
+  MockSpec<Element2>(),
+  MockSpec<LibraryElement2>(),
 ])
 void main() {
   group("Import finder unit tests", () {
@@ -32,8 +31,8 @@ void main() {
     test("getImportUrl - with element - resolution exception - throws", () {
       // Setup
       final exceptionFixture = Exception();
-      final elementFixture = MockElement()
-        ..stubReturn((it) => it.library, MockLibraryElement());
+      final elementFixture = MockElement2()
+        ..stubReturn((it) => it.library2, MockLibraryElement2());
       when(mockLibraryReader.pathToElement(any)).thenThrow(exceptionFixture);
 
       // Run test
@@ -44,8 +43,8 @@ void main() {
       // Setup
       when(mockLibraryReader.pathToElement(any))
           .thenReturn(Uri.parse("dart:core"));
-      final elementFixture = MockElement()
-        ..stubReturn((it) => it.library, MockLibraryElement());
+      final elementFixture = MockElement2()
+        ..stubReturn((it) => it.library2, MockLibraryElement2());
 
       // Run test
       expect(sut.getImportUrl(elementFixture), "dart:core");

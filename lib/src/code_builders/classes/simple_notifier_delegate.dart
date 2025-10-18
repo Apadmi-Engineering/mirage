@@ -1,4 +1,4 @@
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/dart/element/type.dart' as analyzer;
 import 'package:code_builder/code_builder.dart';
 import 'package:mirage/src/code_builders/classes/class_code_builder.dart';
@@ -9,8 +9,6 @@ import 'package:mirage/src/models/errors.dart';
 import 'package:mirage/src/models/fake_type.dart';
 import 'package:mirage/src/seed_finder.dart';
 import 'package:mirage/src/type_referencer.dart';
-import 'package:riverpod/riverpod.dart';
-import 'package:source_gen/source_gen.dart';
 
 class SimpleNotifierDelegate
     with ClassCodeBuilderUtils
@@ -39,7 +37,7 @@ class SimpleNotifierDelegate
     return fakedOutput + [notifier];
   }
 
-  Class _getClassReference(ClassElement element, Set<FakeType> fakeTypes) {
+  Class _getClassReference(ClassElement2 element, Set<FakeType> fakeTypes) {
     return Class((builder) {
       final typeName = getTypeName(element.thisType);
 
@@ -84,25 +82,15 @@ class SimpleNotifierDelegate
         _methodGenerator.generateMethods(
           element,
           seedValueProvided: seedType != null,
-          generateKeepAlive: _isAutoDisposedNotifier(element.thisType),
+          // TODO: Figure out how to detect auto-dispose notifiers.
+          generateKeepAlive: true,
         ),
       );
     });
   }
 
-  bool _isAutoDisposedNotifier(analyzer.DartType type) {
-    const typeChecker = TypeChecker.any(
-      [
-        TypeChecker.fromRuntime(AutoDisposeNotifier),
-        TypeChecker.fromRuntime(AutoDisposeAsyncNotifier),
-        TypeChecker.fromRuntime(AutoDisposeStreamNotifier),
-      ],
-    );
-    return typeChecker.isSuperTypeOf(type);
-  }
-
-  Set<FakeType> _generateFakeTypes(ClassElement classElement) {
-    final publicMethods = classElement.methods.where((method) => method.isPublic);
+  Set<FakeType> _generateFakeTypes(ClassElement2 classElement) {
+    final publicMethods = classElement.methods2.where((method) => method.isPublic);
     final returnTypes = publicMethods.map((method) => method.returnType).toSet();
     return _fakeTypeCodeBuilder.generateFakeTypes(returnTypes);
   }

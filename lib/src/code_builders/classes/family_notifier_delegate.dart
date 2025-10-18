@@ -1,4 +1,4 @@
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/dart/element/type.dart' as analyzer;
 import 'package:code_builder/code_builder.dart';
 import 'package:mirage/src/code_builders/classes/class_code_builder.dart';
@@ -9,8 +9,6 @@ import 'package:mirage/src/models/errors.dart';
 import 'package:mirage/src/models/fake_type.dart';
 import 'package:mirage/src/seed_finder.dart';
 import 'package:mirage/src/type_referencer.dart';
-import 'package:riverpod/riverpod.dart';
-import 'package:source_gen/source_gen.dart';
 
 class FamilyNotifierDelegate
     with ClassCodeBuilderUtils
@@ -39,10 +37,10 @@ class FamilyNotifierDelegate
     return fakedClasses + [notifier];
   }
 
-  Class _getNotifierClass(ClassElement element, Set<FakeType> fakeTypes) {
+  Class _getNotifierClass(ClassElement2 element, Set<FakeType> fakeTypes) {
     return Class((classBuilder) {
       final typeName = getTypeName(element.thisType);
-      final superType = element.supertype?.element.supertype;
+      final superType = element.supertype?.element3.supertype;
       if (superType == null) {
         throw ProviderSupertypeNotFound(element.thisType);
       }
@@ -82,28 +80,15 @@ class FamilyNotifierDelegate
         _methodGenerator.generateMethods(
           element,
           seedValueProvided: seedType != null,
-          generateKeepAlive: _isAutoDisposedNotifier(element),
+          // TODO: Figure out how to detect auto-dispose notifiers
+          generateKeepAlive: true,
         ),
       );
     });
   }
 
-  bool _isAutoDisposedNotifier(ClassElement element) {
-    final refElement =
-        element.lookUpInheritedConcreteGetter("ref", element.library);
-    if (refElement == null) {
-      throw InvalidTypeMockedError(element.thisType);
-    }
-    const typeChecker = TypeChecker.any([
-      TypeChecker.fromRuntime(AutoDisposeNotifierProviderRef),
-      TypeChecker.fromRuntime(AutoDisposeAsyncNotifierProviderRef),
-      TypeChecker.fromRuntime(AutoDisposeStreamNotifierProviderRef),
-    ]);
-    return typeChecker.isAssignableFromType(refElement.returnType);
-  }
-
-  Set<FakeType> _generateFakeTypes(ClassElement classElement) {
-    final publicMethods = classElement.methods.where((method) => method.isPublic);
+  Set<FakeType> _generateFakeTypes(ClassElement2 classElement) {
+    final publicMethods = classElement.methods2.where((method) => method.isPublic);
     final returnTypes = publicMethods.map((method) => method.returnType).toSet();
     return _fakeTypeCodeBuilder.generateFakeTypes(returnTypes);
   }

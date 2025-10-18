@@ -18,6 +18,8 @@ void testGoldenBuilder(
         final inputSource = await (File(inputPath).readAsString());
         final generatedSource = await (File(generatedPartPath).readAsString());
         final expectedSource = await (File(expectedPath).readAsString());
+        final readerWriter = TestReaderWriter(rootPackage: "mirage");
+        await readerWriter.testing.loadIsolateSources();
         await testBuilder(
           MirageBuilder(),
           {
@@ -26,10 +28,10 @@ void testGoldenBuilder(
             "mirage|test/input.mirage.dart": expectedSource,
           },
           generateFor: {"mirage|test/input.dart"},
-          reader: await PackageAssetReader.currentIsolate(),
           outputs: {
             "mirage|test/input.mirage.dart": expectedSource,
           },
+          readerWriter: readerWriter,
         );
       },
     );

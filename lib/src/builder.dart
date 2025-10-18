@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:build/build.dart';
 import 'package:code_builder/code_builder.dart';
@@ -44,7 +44,7 @@ class MirageBuilder implements Builder {
     );
   }
 
-  Future<LibraryElement?> _getInputLibrary(BuildStep step) async {
+  Future<LibraryElement2?> _getInputLibrary(BuildStep step) async {
     if (!await step.resolver.isLibrary(step.inputId)) {
       return null;
     }

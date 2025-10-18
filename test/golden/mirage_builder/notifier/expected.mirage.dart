@@ -3,22 +3,23 @@
 // ignore_for_file: invalid_use_of_internal_member, unused_element
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:riverpod/src/notifier.dart' as _i1;
+import 'input.dart' as _i1;
 import 'package:mockito/mockito.dart' as _i2;
-import 'input.dart' as _i3;
-import 'package:mockito/src/dummies.dart' as _i4;
-import 'dart:async' as _i5;
+import 'package:mockito/src/dummies.dart' as _i3;
+import 'dart:async' as _i4;
 
 // Mirage generated mock of class [TestNotifier].
-class MockTestNotifier extends _i1.Notifier<String>
+class MockTestNotifier extends _i1._$TestNotifier
     with _i2.Mock
-    implements _i3.TestNotifier {
+    implements _i1.TestNotifier {
   MockTestNotifier(this.seedBuilder);
 
   String Function() seedBuilder;
 
   @override
   String build() {
+    // keepAlive() used so mock instance with stubbed/real calls isn't disposed.
+    ref.keepAlive();
     return noSuchMethod(
       Invocation.method(#build, []),
       returnValueForMissingStub: seedBuilder(),
@@ -29,11 +30,11 @@ class MockTestNotifier extends _i1.Notifier<String>
   String someMethod() {
     return noSuchMethod(
       Invocation.method(#someMethod, []),
-      returnValueForMissingStub: _i4.dummyValue<String>(
+      returnValueForMissingStub: _i3.dummyValue<String>(
         this,
         Invocation.method(#someMethod, []),
       ),
-      returnValue: _i4.dummyValue<String>(
+      returnValue: _i3.dummyValue<String>(
         this,
         Invocation.method(#someMethod, []),
       ),
@@ -41,14 +42,14 @@ class MockTestNotifier extends _i1.Notifier<String>
   }
 
   @override
-  _i5.Future<int> someAsyncMethod() async {
+  _i4.Future<int> someAsyncMethod() async {
     return noSuchMethod(
       Invocation.method(#someAsyncMethod, []),
-      returnValueForMissingStub: _i4.dummyValue<int>(
+      returnValueForMissingStub: _i3.dummyValue<int>(
         this,
         Invocation.method(#someAsyncMethod, []),
       ),
-      returnValue: _i4.dummyValue<int>(
+      returnValue: _i3.dummyValue<int>(
         this,
         Invocation.method(#someAsyncMethod, []),
       ),
@@ -61,7 +62,7 @@ class MockTestNotifier extends _i1.Notifier<String>
   }
 
   @override
-  _i5.Future<void> asyncSideEffect() async {
+  _i4.Future<void> asyncSideEffect() async {
     return noSuchMethod(Invocation.method(#asyncSideEffect, []));
   }
 }

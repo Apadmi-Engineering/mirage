@@ -11,11 +11,11 @@ class ProviderCodeBuilder with ClassCodeBuilderUtils {
 
   List<Class> generate(DartType type) {
     final classElement = getClassForType(type);
-    final buildMethod = classElement.getMethod("build");
+    final buildMethod = classElement.getMethod2("build");
     if(buildMethod == null) {
       throw InvalidTypeMockedError(type);
     }
-    final isFamily = buildMethod.parameters.isNotEmpty;
+    final isFamily = buildMethod.formalParameters.isNotEmpty;
     if(isFamily) {
       return familyDelegate.generate(type);
     } else {
