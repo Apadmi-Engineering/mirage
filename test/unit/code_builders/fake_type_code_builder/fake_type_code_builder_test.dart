@@ -1,4 +1,4 @@
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:code_builder/code_builder.dart';
 import 'package:mirage/src/code_builders/fake_type_code_builder.dart';
@@ -17,14 +17,14 @@ part 'fixtures.dart';
 @GenerateNiceMocks([
   MockSpec<DartType>(),
   MockSpec<VoidType>(),
-  MockSpec<Element>(),
-  MockSpec<ClassElement>(),
-  MockSpec<EnumElement>(),
-  MockSpec<LibraryElement>(),
+  MockSpec<Element2>(),
+  MockSpec<ClassElement2>(),
+  MockSpec<EnumElement2>(),
+  MockSpec<LibraryElement2>(),
   MockSpec<LibraryReader>(),
   MockSpec<ImportFinder>(),
   MockSpec<ParameterizedType>(),
-  MockSpec<TypeParameterElement>(),
+  MockSpec<TypeParameterElement2>(),
 ])
 void main() {
   group("Fake type code builder unit tests", () {
@@ -59,19 +59,19 @@ void main() {
       // Verify
       final expected = {
         FakeType(null, _voidType(), null, null),
-        FakeType(_coreType().element, _coreType(), null, null),
-        FakeType(_enumType().element, _enumType(), null, null),
+        FakeType(_coreType().element3, _coreType(), null, null),
+        FakeType(_enumType().element3, _enumType(), null, null),
         FakeType(
-            _interfaceType().element, _interfaceType(), "_FakeMyClass", null),
-        FakeType(_futureType().element, _futureType(), null, null),
-        FakeType(_streamType().element, _streamType(), null, null),
-        FakeType(_genericType().element, _genericType(), "_FakeOuterClass", [
-          FakeType(_genericType().typeArguments.first.element,
+            _interfaceType().element3, _interfaceType(), "_FakeMyClass", null),
+        FakeType(_futureType().element3, _futureType(), null, null),
+        FakeType(_streamType().element3, _streamType(), null, null),
+        FakeType(_genericType().element3, _genericType(), "_FakeOuterClass", [
+          FakeType(_genericType().typeArguments.first.element3,
               _genericType().typeArguments.first, "_FakeInnerClass", []),
         ]),
-        FakeType(_privateType().element, _privateType(), null, []),
-        FakeType(_finalType().element, _finalType(), null, []),
-        FakeType(_sealedType().element, _sealedType(), null, []),
+        FakeType(_privateType().element3, _privateType(), null, []),
+        FakeType(_finalType().element3, _finalType(), null, []),
+        FakeType(_sealedType().element3, _sealedType(), null, []),
       };
       expect(
         result,
@@ -96,7 +96,7 @@ void main() {
     test("buildFakeClass - with no original element - returns null", () {
       // Setup
       final dartTypeFixture = MockDartType()
-        ..stubReturn((it) => it.element, null);
+        ..stubReturn((it) => it.element3, null);
       final fakeType = FakeType(null, dartTypeFixture, null, null);
 
       // Run test & verify
@@ -105,10 +105,10 @@ void main() {
 
     test("buildFakeClass - with no fake type name - returns null", () {
       // Setup
-      final mockClassElement = MockClassElement();
+      final mockClassElement = MockClassElement2();
       final dartTypeFixture = MockDartType()
         ..stubReturn(
-          (it) => it.element,
+          (it) => it.element3,
           mockClassElement,
         );
       final fakeType = FakeType(mockClassElement, dartTypeFixture, null, null);
@@ -119,10 +119,10 @@ void main() {
 
     test("buildFakeClass - with fake type - returns class", () {
       // Setup
-      final mockClassElement = MockClassElement()
-        ..stubReturn((it) => it.name, "MyType");
+      final mockClassElement = MockClassElement2()
+        ..stubReturn((it) => it.name3, "MyType");
       final dartTypeFixture = MockDartType()
-        ..stubReturn((it) => it.element, mockClassElement);
+        ..stubReturn((it) => it.element3, mockClassElement);
       final fakeType =
           FakeType(mockClassElement, dartTypeFixture, "_FakeMyType", null);
 

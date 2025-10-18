@@ -1,6 +1,6 @@
 import 'dart:core';
 
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:code_builder/code_builder.dart';
 import 'package:mirage/src/util/method_builder_utils.dart';
@@ -12,31 +12,31 @@ import 'method_builder_utils_test.mocks.dart';
 
 @GenerateNiceMocks([
   MockSpec<DartType>(),
-  MockSpec<MethodElement>(),
-  MockSpec<ParameterElement>(),
+  MockSpec<MethodElement2>(),
+  MockSpec<FormalParameterElement>(),
 ])
 void main() {
   group("Method builder unit tests", () {
     test("copyParameters - adds expected parameters", () {
       // Setup
       // Parameter
-      final parameterFixture = MockParameterElement();
-      when(parameterFixture.name).thenReturn("p1");
+      final parameterFixture = MockFormalParameterElement();
+      when(parameterFixture.name3).thenReturn("p1");
       when(parameterFixture.type).thenReturn(MockDartType());
       when(parameterFixture.isNamed).thenReturn(false);
       when(parameterFixture.isOptional).thenReturn(false);
       when(parameterFixture.isRequired).thenReturn(true);
 
       // Optional parameter
-      final optionalParameterFixture = MockParameterElement();
-      when(optionalParameterFixture.name).thenReturn("p2");
+      final optionalParameterFixture = MockFormalParameterElement();
+      when(optionalParameterFixture.name3).thenReturn("p2");
       when(optionalParameterFixture.type).thenReturn(MockDartType());
       when(optionalParameterFixture.isNamed).thenReturn(true);
       when(optionalParameterFixture.isOptional).thenReturn(true);
       when(optionalParameterFixture.isRequired).thenReturn(false);
 
-      final mockElement = MockMethodElement();
-      when(mockElement.parameters)
+      final mockElement = MockMethodElement2();
+      when(mockElement.formalParameters)
           .thenReturn([parameterFixture, optionalParameterFixture]);
 
       final sut = MethodBuilder();
