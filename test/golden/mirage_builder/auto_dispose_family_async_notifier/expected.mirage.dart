@@ -3,14 +3,14 @@
 // ignore_for_file: invalid_use_of_internal_member, unused_element
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:riverpod/src/async_notifier.dart' as _i1;
+import 'package:riverpod/src/providers/async_notifier.dart' as _i1;
 import 'package:mockito/mockito.dart' as _i2;
 import 'input.dart' as _i3;
 import 'dart:async' as _i4;
 import 'package:mockito/src/dummies.dart' as _i5;
 
 // Mirage generated mock of class [TestNotifier].
-class MockTestNotifier extends _i1.BuildlessAutoDisposeAsyncNotifier<String>
+class MockTestNotifier extends _i1.$AsyncNotifier<String>
     with _i2.Mock
     implements _i3.TestNotifier {
   MockTestNotifier(this.seedBuilder);

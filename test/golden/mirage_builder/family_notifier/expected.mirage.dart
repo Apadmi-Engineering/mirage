@@ -3,14 +3,14 @@
 // ignore_for_file: invalid_use_of_internal_member, unused_element
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:riverpod/src/notifier.dart' as _i1;
+import 'package:riverpod/src/providers/notifier.dart' as _i1;
 import 'package:mockito/mockito.dart' as _i2;
 import 'input.dart' as _i3;
 import 'package:mockito/src/dummies.dart' as _i4;
 import 'dart:async' as _i5;
 
 // Mirage generated mock of class [TestNotifier].
-class MockTestNotifier extends _i1.BuildlessNotifier<String>
+class MockTestNotifier extends _i1.$Notifier<String>
     with _i2.Mock
     implements _i3.TestNotifier {
   MockTestNotifier(this.seedBuilder);
@@ -19,6 +19,8 @@ class MockTestNotifier extends _i1.BuildlessNotifier<String>
 
   @override
   String build(String? param) {
+    // keepAlive() used so mock instance with stubbed/real calls isn't disposed.
+    ref.keepAlive();
     return noSuchMethod(
       Invocation.method(#build, [param]),
       returnValueForMissingStub: seedBuilder(),
