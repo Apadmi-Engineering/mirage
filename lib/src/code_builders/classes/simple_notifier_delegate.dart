@@ -1,6 +1,7 @@
 import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/dart/element/type.dart' as analyzer;
 import 'package:code_builder/code_builder.dart';
+import 'package:mirage/src/code_builders/class_member_copier.dart';
 import 'package:mirage/src/code_builders/classes/class_code_builder.dart';
 import 'package:mirage/src/code_builders/fake_type_code_builder.dart';
 import 'package:mirage/src/code_builders/method_code_builder.dart';
@@ -48,6 +49,7 @@ class SimpleNotifierDelegate
       // Class signature
       builder
         ..name = "Mock$typeName"
+        ..docs.add("Super-type = ${superType.element3.name3}")
         ..docs.add("// Mirage generated mock of class [$typeName].")
         ..extend = _typeReferencer.obtainReferenceForType(superType)
         ..mixins.add(refer("Mock", "package:mockito/mockito.dart"))
@@ -90,8 +92,10 @@ class SimpleNotifierDelegate
   }
 
   Set<FakeType> _generateFakeTypes(ClassElement2 classElement) {
-    final publicMethods = classElement.methods2.where((method) => method.isPublic);
-    final returnTypes = publicMethods.map((method) => method.returnType).toSet();
+    final publicMethods =
+        classElement.methods2.where((method) => method.isPublic);
+    final returnTypes =
+        publicMethods.map((method) => method.returnType).toSet();
     return _fakeTypeCodeBuilder.generateFakeTypes(returnTypes);
   }
 

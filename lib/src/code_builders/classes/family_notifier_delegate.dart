@@ -1,6 +1,9 @@
+import 'package:analyzer/dart/analysis/results.dart';
+import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/dart/element/type.dart' as analyzer;
 import 'package:code_builder/code_builder.dart';
+import 'package:mirage/src/code_builders/class_member_copier.dart';
 import 'package:mirage/src/code_builders/classes/class_code_builder.dart';
 import 'package:mirage/src/code_builders/fake_type_code_builder.dart';
 import 'package:mirage/src/code_builders/method_code_builder.dart';
@@ -47,10 +50,27 @@ class FamilyNotifierDelegate
       // Class signature
       classBuilder
         ..name = "Mock$typeName"
+        ..docs.add("// Super-type = ${element.supertype?.element3.name3}")
         ..docs.add("// Mirage generated mock of class [$typeName].")
         ..extend = _typeReferencer.obtainReferenceForType(superType)
         ..mixins.add(refer("Mock", "package:mockito/mockito.dart"))
         ..implements.add(refer(typeName, _importFinder.getImportUrl(element)));
+
+      for (final GetterElement getter in element.supertype?.getters ?? []) {
+        final fieldCopier = FieldCopier();
+        final copiedGetter = fieldCopier.copyGetter(getter);
+        if(copiedGetter != null) {
+          classBuilder.methods.add(copiedGetter);
+        }
+      }
+
+      for (final FieldElement2 field in element.supertype?.element3.fields2 ?? []) {
+        final fieldCopier = FieldCopier();
+        final copiedField = fieldCopier.copyField(field);
+        if(copiedField != null) {
+          classBuilder.fields.add(copiedField);
+        }
+      }
 
       // Add seeded constructor
       final seedType = _seedFinder.getNonVoidSeedType(element);

@@ -38,9 +38,9 @@ class MirageBuilder implements Builder {
 
     await buildStep.writeAsString(
       inputId.changeExtension(".mirage.dart"),
-      ServiceLocator.formatter.format(
+      // ServiceLocator.formatter.format(
         "${mockLibrary.accept(ServiceLocator.emitter)}",
-      ),
+      // ),
     );
   }
 
