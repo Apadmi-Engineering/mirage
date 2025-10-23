@@ -72,6 +72,15 @@ class FamilyNotifierDelegate
         }
       }
 
+      final runBuildMethod = element.supertype?.element3.methods2.where((method) => method.name3 == "runBuild").firstOrNull;
+      if(runBuildMethod != null) {
+        final fieldCopier = FieldCopier();
+        final copiedMethod = fieldCopier.copyMethod(runBuildMethod);
+        if(copiedMethod != null) {
+          classBuilder.methods.add(copiedMethod);
+        }
+      }
+
       // Add seeded constructor
       final seedType = _seedFinder.getNonVoidSeedType(element);
       if (seedType != null) {

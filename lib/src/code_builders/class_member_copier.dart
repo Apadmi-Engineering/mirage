@@ -24,6 +24,13 @@ class FieldCopier {
           ..assignment = implementation);
       });
 
+  Method? copyMethod(MethodElement2 element) =>
+      _copyMethodImplementation(element)?.let((implementation) {
+        return Method((mb) => mb
+          ..name = element.name3
+          ..body = implementation);
+      });
+
   Code? _copyGetterImplementation(TypeParameterizedElement2 element) {
     final library =
         element.session?.getParsedLibraryByElement2(element.library2);
@@ -68,6 +75,35 @@ class FieldCopier {
       return null;
     }
     final rawBody = declaration.initializer;
-    return Code(rawBody?.toSource() ?? "");
+    return Code.scope((allocate) {
+      allocate(
+          refer("Ref", "package:riverpod_annotation/riverpod_annotation.dart"));
+      return rawBody?.toSource() ?? "";
+    });
   }
+
+  Code? _copyMethodImplementation(MethodElement2 element) {
+    final library =
+        element.session?.getParsedLibraryByElement2(element.library2);
+    if (library is! ParsedLibraryResult) {
+      return null;
+    }
+    final declaration =
+        library.getFragmentDeclaration(element.firstFragment)?.node;
+    if (declaration == null) {
+      return null;
+    }
+    if (declaration is! MethodDeclaration) {
+      return null;
+    }
+    final body = declaration.body;
+    return Code.scope((allocate) {
+      SourceRe
+      return body.toSource() ?? "";
+    });
+  }
+}
+
+class MethodSymbolAllocator extends AstVisitor {
+
 }
