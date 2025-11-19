@@ -58,7 +58,6 @@ class SimpleNotifierDelegate
       // Class signature
       builder
         ..name = "Mock$typeName"
-        ..docs.add("Super-type = ${superType.element3.name3}")
         ..docs.add("// Mirage generated mock of class [$typeName].")
         ..extend = _typeReferencer.obtainReferenceForType(superType)
         ..mixins.add(refer("Mock", "package:mockito/mockito.dart"))
@@ -83,7 +82,7 @@ class SimpleNotifierDelegate
           .where((method) => method.name3 == "runBuild")
           .firstOrNull;
       if (runBuildMethod != null) {
-        final copiedMethod = memberCopier.copyMethod(runBuildMethod);
+        final copiedMethod = memberCopier.copyMethod(runBuildMethod, true);
         if (copiedMethod != null) {
           builder.methods.add(copiedMethod);
         }

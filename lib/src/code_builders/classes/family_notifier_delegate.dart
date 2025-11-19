@@ -55,7 +55,6 @@ class FamilyNotifierDelegate
       // Class signature
       classBuilder
         ..name = "Mock$typeName"
-        ..docs.add("// Super-type = ${element.supertype?.element3.name3}")
         ..docs.add("// Mirage generated mock of class [$typeName].")
         ..extend = _typeReferencer.obtainReferenceForType(superType)
         ..mixins.add(refer("Mock", "package:mockito/mockito.dart"))
@@ -77,7 +76,7 @@ class FamilyNotifierDelegate
 
       final runBuildMethod = element.supertype?.element3.methods2.where((method) => method.name3 == "runBuild").firstOrNull;
       if(runBuildMethod != null) {
-        final copiedMethod = memberCopier.copyMethod(runBuildMethod);
+        final copiedMethod = memberCopier.copyMethod(runBuildMethod, true);
         if(copiedMethod != null) {
           classBuilder.methods.add(copiedMethod);
         }

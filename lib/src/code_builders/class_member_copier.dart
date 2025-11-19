@@ -11,11 +11,10 @@ abstract interface class MemberCopier {
 
   Field? copyField(FieldElement2 element);
 
-  Method? copyMethod(MethodElement2 element);
+  Method? copyMethod(MethodElement2 element, bool isOverride);
 }
 
 class MemberCopierImpl implements MemberCopier {
-
   final ResolvedLibraryResult library;
 
   MemberCopierImpl(this.library);
@@ -42,11 +41,13 @@ class MemberCopierImpl implements MemberCopier {
       });
 
   @override
-  Method? copyMethod(MethodElement2 element) =>
+  Method? copyMethod(MethodElement2 element, bool isOverride) =>
       copyMethodImplementation(element, library)?.let((implementation) {
         return Method((mb) => mb
           ..name = element.name3
-          ..body = implementation);
+          ..body = implementation
+          ..annotations
+              .addAll([if (isOverride) CodeExpression(Code("override"))]));
       });
 
   Code? copyGetterImplementation(TypeParameterizedElement2 element) {
