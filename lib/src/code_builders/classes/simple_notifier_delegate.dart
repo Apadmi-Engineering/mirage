@@ -51,7 +51,7 @@ class SimpleNotifierDelegate
     return Class((builder) {
       final typeName = getTypeName(element.thisType);
 
-      final superType = element.supertype;
+      final superType = element.supertype?.element3.supertype;
       if (superType == null) {
         throw ProviderSupertypeNotFound(element.thisType);
       }
