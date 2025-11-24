@@ -70,7 +70,7 @@ class MethodCodeBuilder {
                 ", returnValueForMissingStub: seedBuilder()",
               );
             }
-            blockBuilder.addStaticCode(",);");
+            blockBuilder.addStaticCode(");");
           })
           ..copyParameters(
             method: method,
