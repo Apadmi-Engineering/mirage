@@ -1,6 +1,8 @@
+import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/dart/element/type.dart' as analyzer;
 import 'package:code_builder/code_builder.dart';
+import 'package:mirage/src/code_builders/class_member_copier.dart';
 import 'package:mirage/src/code_builders/classes/class_code_builder.dart';
 import 'package:mirage/src/code_builders/fake_type_code_builder.dart';
 import 'package:mirage/src/code_builders/method_code_builder.dart';
@@ -28,16 +30,22 @@ class FamilyNotifierDelegate
   );
 
   @override
-  List<Class> generate(analyzer.DartType type) {
+  Future<List<Class>> generate(analyzer.DartType type) async {
     final classElement = getClassForType(type);
     final fakeTypes = _generateFakeTypes(classElement);
 
-    final notifier = _getNotifierClass(classElement, fakeTypes);
+    final notifier = await _getNotifierClass(classElement, fakeTypes);
     final fakedClasses = _generateFakeClasses(fakeTypes) ?? [];
     return fakedClasses + [notifier];
   }
 
-  Class _getNotifierClass(ClassElement2 element, Set<FakeType> fakeTypes) {
+  Future<Class> _getNotifierClass(ClassElement2 element, Set<FakeType> fakeTypes) async {
+    final resolvedResult = await element.session?.getResolvedLibraryByElement2(element.library2);
+    if(resolvedResult is! ResolvedLibraryResult) {
+      throw StateError("Unable to resolve library for class");
+    }
+    // TODO: Inject this.
+    final memberCopier = MemberCopierImpl(resolvedResult);
     return Class((classBuilder) {
       final typeName = getTypeName(element.thisType);
       final superType = element.supertype?.element3.supertype;
@@ -51,6 +59,28 @@ class FamilyNotifierDelegate
         ..extend = _typeReferencer.obtainReferenceForType(superType)
         ..mixins.add(refer("Mock", "package:mockito/mockito.dart"))
         ..implements.add(refer(typeName, _importFinder.getImportUrl(element)));
+
+      for (final GetterElement getter in element.supertype?.getters ?? []) {
+        final copiedGetter = memberCopier.copyGetter(getter);
+        if(copiedGetter != null) {
+          classBuilder.methods.add(copiedGetter);
+        }
+      }
+
+      for (final FieldElement2 field in element.supertype?.element3.fields2 ?? []) {
+        final copiedField = memberCopier.copyField(field);
+        if(copiedField != null) {
+          classBuilder.fields.add(copiedField);
+        }
+      }
+
+      final runBuildMethod = element.supertype?.element3.methods2.where((method) => method.name3 == "runBuild").firstOrNull;
+      if(runBuildMethod != null) {
+        final copiedMethod = memberCopier.copyMethod(runBuildMethod, true);
+        if(copiedMethod != null) {
+          classBuilder.methods.add(copiedMethod);
+        }
+      }
 
       // Add seeded constructor
       final seedType = _seedFinder.getNonVoidSeedType(element);

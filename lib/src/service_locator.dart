@@ -67,7 +67,7 @@ class ServiceLocator {
       );
 
   static DartFormatter formatter = DartFormatter(
-    languageVersion: DartFormatter.latestLanguageVersion,
+    languageVersion: DartFormatter.latestShortStyleLanguageVersion,
     pageWidth: 80,
   );
 

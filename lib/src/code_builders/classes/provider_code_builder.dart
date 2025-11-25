@@ -9,7 +9,7 @@ class ProviderCodeBuilder with ClassCodeBuilderUtils {
 
   const ProviderCodeBuilder(this.notifierDelegate, this.familyDelegate,);
 
-  List<Class> generate(DartType type) {
+  Future<List<Class>> generate(DartType type) async {
     final classElement = getClassForType(type);
     final buildMethod = classElement.getMethod2("build");
     if(buildMethod == null) {
@@ -17,9 +17,9 @@ class ProviderCodeBuilder with ClassCodeBuilderUtils {
     }
     final isFamily = buildMethod.formalParameters.isNotEmpty;
     if(isFamily) {
-      return familyDelegate.generate(type);
+      return await familyDelegate.generate(type);
     } else {
-      return notifierDelegate.generate(type);
+      return await notifierDelegate.generate(type);
     }
   }
 }
