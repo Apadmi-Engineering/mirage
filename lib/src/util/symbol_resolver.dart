@@ -5,7 +5,7 @@ import 'package:code_builder/code_builder.dart';
 class SymbolResolver extends RecursiveAstVisitor {
   static const _coreLibraryScheme = "dart";
 
-  Set<Reference> _references = {};
+  final Set<Reference> _references = {};
 
   @override
   visitNamedType(NamedType node) {
