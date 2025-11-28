@@ -1,7 +1,9 @@
+import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/dart/element/type_system.dart';
 import 'package:code_builder/code_builder.dart';
 import 'package:dart_style/dart_style.dart';
+import 'package:mirage/src/code_builders/class_member_copier.dart';
 import 'package:mirage/src/code_builders/classes/family_notifier_delegate.dart';
 import 'package:mirage/src/code_builders/classes/simple_notifier_delegate.dart';
 import 'package:mirage/src/code_builders/classes/provider_code_builder.dart';
@@ -19,6 +21,8 @@ class ServiceLocator {
 
   static LibraryReader getLibraryReader(LibraryElement2 library) =>
       LibraryReader(library);
+
+  static MemberCopier getMemberCopier(ResolvedLibraryResult library) => MemberCopierImpl(library);
 
   static TypeSystem getTypeSystem(LibraryElement2 library) => library.typeSystem;
 
@@ -45,6 +49,7 @@ class ServiceLocator {
   static SimpleNotifierDelegate getNotifierDelegate(LibraryElement2 library) =>
       SimpleNotifierDelegate(
         getFakeTypeCodeBuilder(library),
+        getMemberCopier,
         getImportFinder(library),
         getMethodGenerator(library),
         getSeedFinder(),
@@ -54,6 +59,7 @@ class ServiceLocator {
   static FamilyNotifierDelegate getFamilyDelegate(LibraryElement2 library) =>
       FamilyNotifierDelegate(
         getFakeTypeCodeBuilder(library),
+        getMemberCopier,
         getImportFinder(library),
         getMethodGenerator(library),
         getSeedFinder(),

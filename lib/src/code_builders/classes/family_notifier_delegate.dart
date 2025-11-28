@@ -16,6 +16,7 @@ class FamilyNotifierDelegate
     with ClassCodeBuilderUtils
     implements ClassCodeBuilderDelegate {
   final FakeTypeCodeBuilder _fakeTypeCodeBuilder;
+  final Function(ResolvedLibraryResult result) _getMemberCopier;
   final ImportFinder _importFinder;
   final MethodCodeBuilder _methodGenerator;
   final SeedFinder _seedFinder;
@@ -23,6 +24,7 @@ class FamilyNotifierDelegate
 
   const FamilyNotifierDelegate(
     this._fakeTypeCodeBuilder,
+    this._getMemberCopier,
     this._importFinder,
     this._methodGenerator,
     this._seedFinder,
@@ -44,8 +46,7 @@ class FamilyNotifierDelegate
     if(resolvedResult is! ResolvedLibraryResult) {
       throw StateError("Unable to resolve library for class");
     }
-    // TODO: Inject this.
-    final memberCopier = MemberCopierImpl(resolvedResult);
+    final memberCopier = _getMemberCopier(resolvedResult);
     return Class((classBuilder) {
       final typeName = getTypeName(element.thisType);
       final superType = element.supertype?.element3.supertype;

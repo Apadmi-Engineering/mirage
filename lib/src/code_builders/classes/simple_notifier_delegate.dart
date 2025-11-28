@@ -16,6 +16,7 @@ class SimpleNotifierDelegate
     with ClassCodeBuilderUtils
     implements ClassCodeBuilderDelegate {
   final FakeTypeCodeBuilder _fakeTypeCodeBuilder;
+  final MemberCopier Function(ResolvedLibraryResult result) _getMemberCopier;
   final ImportFinder _importFinder;
   final MethodCodeBuilder _methodGenerator;
   final SeedFinder _seedFinder;
@@ -23,6 +24,7 @@ class SimpleNotifierDelegate
 
   const SimpleNotifierDelegate(
     this._fakeTypeCodeBuilder,
+    this._getMemberCopier,
     this._importFinder,
     this._methodGenerator,
     this._seedFinder,
@@ -46,8 +48,7 @@ class SimpleNotifierDelegate
     if (resolvedResult is! ResolvedLibraryResult) {
       throw StateError("Unable to resolve library for class");
     }
-    // TODO: Inject this.
-    final memberCopier = MemberCopierImpl(resolvedResult);
+    final memberCopier = _getMemberCopier(resolvedResult);
     return Class((builder) {
       final typeName = getTypeName(element.thisType);
 
