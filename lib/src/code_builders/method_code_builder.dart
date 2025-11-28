@@ -22,6 +22,7 @@ class MethodCodeBuilder {
   List<Method> generateMethods(
     ClassElement2 classElement, {
     bool seedValueProvided = true,
+    // TODO(TomRHandcock) Remove this field when deemed no longer required.
     bool generateKeepAlive = false,
   }) {
     final methodElements = classElement.methods2;

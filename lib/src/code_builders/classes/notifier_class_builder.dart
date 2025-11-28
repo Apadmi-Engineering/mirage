@@ -110,8 +110,6 @@ class NotifierClassBuilder
         _methodGenerator.generateMethods(
           element,
           seedValueProvided: seedType != null,
-          // TODO: Figure out how to detect auto-dispose notifiers
-          generateKeepAlive: true,
         ),
       );
     });
