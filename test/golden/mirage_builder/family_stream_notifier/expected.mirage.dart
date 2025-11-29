@@ -39,8 +39,6 @@ class MockTestNotifier extends _i1.$StreamNotifier<String>
 
   @override
   _i5.Stream<String> build(String? param) async* {
-    // keepAlive() used so mock instance with stubbed/real calls isn't disposed.
-    ref.keepAlive();
     yield* noSuchMethod(Invocation.method(#build, [param]),
         returnValueForMissingStub: seedBuilder());
   }
