@@ -2,7 +2,6 @@ import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/dart/element/type.dart' as analyzer;
 import 'package:code_builder/code_builder.dart';
-import 'package:mirage/src/code_builders/class_member_copier.dart';
 import 'package:mirage/src/code_builders/classes/class_code_builder.dart';
 import 'package:mirage/src/code_builders/fake_type_code_builder.dart';
 import 'package:mirage/src/code_builders/method_code_builder.dart';
@@ -12,17 +11,19 @@ import 'package:mirage/src/models/fake_type.dart';
 import 'package:mirage/src/seed_finder.dart';
 import 'package:mirage/src/type_referencer.dart';
 
-class FamilyNotifierDelegate
+class NotifierClassBuilder
     with ClassCodeBuilderUtils
     implements ClassCodeBuilderDelegate {
   final FakeTypeCodeBuilder _fakeTypeCodeBuilder;
+  final Function(ResolvedLibraryResult result) _getMemberCopier;
   final ImportFinder _importFinder;
   final MethodCodeBuilder _methodGenerator;
   final SeedFinder _seedFinder;
   final TypeReferencer _typeReferencer;
 
-  const FamilyNotifierDelegate(
+  const NotifierClassBuilder(
     this._fakeTypeCodeBuilder,
+    this._getMemberCopier,
     this._importFinder,
     this._methodGenerator,
     this._seedFinder,
@@ -44,8 +45,7 @@ class FamilyNotifierDelegate
     if(resolvedResult is! ResolvedLibraryResult) {
       throw StateError("Unable to resolve library for class");
     }
-    // TODO: Inject this.
-    final memberCopier = MemberCopierImpl(resolvedResult);
+    final memberCopier = _getMemberCopier(resolvedResult);
     return Class((classBuilder) {
       final typeName = getTypeName(element.thisType);
       final superType = element.supertype?.element3.supertype;
@@ -110,8 +110,6 @@ class FamilyNotifierDelegate
         _methodGenerator.generateMethods(
           element,
           seedValueProvided: seedType != null,
-          // TODO: Figure out how to detect auto-dispose notifiers
-          generateKeepAlive: true,
         ),
       );
     });

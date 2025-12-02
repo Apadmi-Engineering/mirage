@@ -23,7 +23,7 @@ class MirageBuilder implements Builder {
       return;
     }
 
-    final notifierGenerator = ServiceLocator.getProviderGenerator(library);
+    final notifierGenerator = ServiceLocator.getNotifierBuilder(library);
     final generatedClasses = await Future.wait(typesToMock.map((typeToMock) => notifierGenerator.generate(typeToMock)));
     final mockLibrary = Library((builder) {
       builder.generatedByComment =
