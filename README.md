@@ -2,7 +2,7 @@
     <img src="./assets/mark.png" height=100 width=404>
 </p>
 
-A generator for creating [mockito](https://pub.dev/packages/mockito) mocks of [Riverpod](https://riverpod.dev/) notifiers for use in unit testing.
+A generator for creating [Mockito](https://pub.dev/packages/mockito) mocks of [Riverpod](https://riverpod.dev/) notifiers for use in unit testing.
 
 ## Why is this needed?
 
@@ -23,21 +23,23 @@ to generate Mockito mocks of Riverpod Notifiers in a way that allows for...
 
 ## How do I install it?
 
-Flutter’s pub package manager supports dependencies sourced directly from Git repos with various options to reference specific commits.
+Flutter’s pub package manager supports dependencies sourced directly from Git repos in the following manner.
+
 ```
 dependencies:
   some_dependency:
     git:
       url: git@github.com:Apadmi-Engineering/Mirage.git
-      ref: <Optional, commit ref/tag/branch HEAD>
+      tag_pattern: v{{version}}
+    version: ^1.0.0
 ```
 
 ## How do I use it?
 
-Hopefully in a manner similar to normal usage of Mockito.
+The central aim of this package is that usage is similar to that of Mockito.
 
 Add the `@GenerateMirage` annotation on the `main` method in your unit test file, 
-this annotation takes a single argument, `providerTypesToMock`. The value should 
+this annotation takes a single, named argument, `providerTypesToMock`. The value should 
 be a `Set` of `Type`s that are providers.
 
 For example...
@@ -58,6 +60,9 @@ class MyNotifier extends _$MyNotifier {
 
 Generating a mock of `MyNotifier` in a unit test would look like...
 
+> [!NOTE]
+> **1.X Migration note:** Riverpod 3.X introduces [automatic retry behaviour](https://riverpod.dev/docs/whats_new#automatic-retry) whereby providers that emit errors automatically invalidate and try again. This doesn't allow you to assert error behaviour in unit testing and so it is recommended to disable automatric retries in unit tests ([see here](https://riverpod.dev/docs/concepts2/retry#disabling-retry)).
+
 `my_other_notifier_test.dart`
 ```dart
 @GenerateMirage(providerTypesToMock: {MyNotifier})
@@ -65,10 +70,12 @@ void main() async {
 
     test("My test", () async {
         // Override provider with mock instance.
-        final container = createContainer(
+        final container = ProviderContainer.test(
             overrides: [
                 myNotifierProvider.overrideWith(MockMyNotifier(() => initialState))
-            ]
+            ],
+            // You'll want to disable automatic retry to assert exception behaviour.
+            retry: (_, _) => null,
         );
 
         // To stub (with arg matchers).
