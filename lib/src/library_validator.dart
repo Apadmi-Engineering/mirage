@@ -1,4 +1,4 @@
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:mirage/mirage.dart';
 import 'package:mirage/src/models/errors.dart';
@@ -6,9 +6,9 @@ import 'package:riverpod/riverpod.dart';
 import 'package:source_gen/source_gen.dart';
 
 class LibraryValidator {
-  static const _annotationTypeChecker = TypeChecker.fromRuntime(GenerateMirage);
+  static const _annotationTypeChecker = TypeChecker.typeNamed(GenerateMirage, inPackage: "mirage");
 
-  final LibraryElement library;
+  final LibraryElement2 library;
 
   const LibraryValidator(this.library);
 
@@ -28,15 +28,15 @@ class LibraryValidator {
       if (type == null) {
         throw Exception("Cannot parse type $type");
       }
-      final classElement = type.element;
-      if (classElement is! ClassElement) {
+      final classElement = type.element3;
+      if (classElement is! ClassElement2) {
         throw InvalidTypeMockedError(type);
       }
-      final ref = classElement.lookUpInheritedConcreteGetter("ref", library);
+      final ref = classElement.lookUpGetter2(name: "ref", library: library);
       if (ref == null) {
         throw InvalidTypeMockedError(type);
       }
-      const refTypeChecker = TypeChecker.fromRuntime(Ref);
+      const refTypeChecker = TypeChecker.typeNamed(Ref, inPackage: "riverpod");
       if (!refTypeChecker.isAssignableFromType(ref.returnType)) {
         throw InvalidTypeMockedError(type);
       }
@@ -51,7 +51,7 @@ class LibraryValidator {
       return null;
     }
     return annotatedElements.cast<AnnotatedElement?>().firstWhere(
-          (element) => element?.element.id == library.entryPoint?.id,
+          (element) => element?.element.id == library.entryPoint2?.id,
           orElse: () => null,
         );
   }

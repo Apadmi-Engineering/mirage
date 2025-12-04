@@ -1,8 +1,8 @@
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/dart/element/type.dart';
 
 class FakeType {
-  final Element? element;
+  final Element2? element;
   final DartType originalType;
   final String? fakeTypeName;
   final List<FakeType>? parameterTypes;
@@ -24,7 +24,7 @@ class FakeType {
           .join(", ");
       parameters += ">";
     }
-    return "${originalType.element?.displayName}$parameters";
+    return "${originalType.element3?.displayName}$parameters";
   }
 
   @override

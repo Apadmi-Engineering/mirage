@@ -1,4 +1,5 @@
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/analysis/results.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/dart/element/type.dart' as analyzer;
 import 'package:code_builder/code_builder.dart';
 import 'package:mirage/src/code_builders/classes/class_code_builder.dart';
@@ -9,20 +10,20 @@ import 'package:mirage/src/models/errors.dart';
 import 'package:mirage/src/models/fake_type.dart';
 import 'package:mirage/src/seed_finder.dart';
 import 'package:mirage/src/type_referencer.dart';
-import 'package:riverpod/riverpod.dart';
-import 'package:source_gen/source_gen.dart';
 
-class SimpleNotifierDelegate
+class NotifierClassBuilder
     with ClassCodeBuilderUtils
     implements ClassCodeBuilderDelegate {
   final FakeTypeCodeBuilder _fakeTypeCodeBuilder;
+  final Function(ResolvedLibraryResult result) _getMemberCopier;
   final ImportFinder _importFinder;
   final MethodCodeBuilder _methodGenerator;
   final SeedFinder _seedFinder;
   final TypeReferencer _typeReferencer;
 
-  const SimpleNotifierDelegate(
+  const NotifierClassBuilder(
     this._fakeTypeCodeBuilder,
+    this._getMemberCopier,
     this._importFinder,
     this._methodGenerator,
     this._seedFinder,
@@ -30,35 +31,61 @@ class SimpleNotifierDelegate
   );
 
   @override
-  List<Class> generate(analyzer.DartType type) {
+  Future<List<Class>> generate(analyzer.DartType type) async {
     final classElement = getClassForType(type);
     final fakeTypes = _generateFakeTypes(classElement);
 
-    final notifier = _getClassReference(classElement, fakeTypes);
-    final fakedOutput = _generateFakeClasses(fakeTypes) ?? [];
-    return fakedOutput + [notifier];
+    final notifier = await _getNotifierClass(classElement, fakeTypes);
+    final fakedClasses = _generateFakeClasses(fakeTypes) ?? [];
+    return fakedClasses + [notifier];
   }
 
-  Class _getClassReference(ClassElement element, Set<FakeType> fakeTypes) {
-    return Class((builder) {
+  Future<Class> _getNotifierClass(ClassElement2 element, Set<FakeType> fakeTypes) async {
+    final resolvedResult = await element.session?.getResolvedLibraryByElement2(element.library2);
+    if(resolvedResult is! ResolvedLibraryResult) {
+      throw StateError("Unable to resolve library for class");
+    }
+    final memberCopier = _getMemberCopier(resolvedResult);
+    return Class((classBuilder) {
       final typeName = getTypeName(element.thisType);
-
-      final superType = element.supertype;
+      final superType = element.supertype?.element3.supertype;
       if (superType == null) {
         throw ProviderSupertypeNotFound(element.thisType);
       }
       // Class signature
-      builder
+      classBuilder
         ..name = "Mock$typeName"
         ..docs.add("// Mirage generated mock of class [$typeName].")
         ..extend = _typeReferencer.obtainReferenceForType(superType)
         ..mixins.add(refer("Mock", "package:mockito/mockito.dart"))
         ..implements.add(refer(typeName, _importFinder.getImportUrl(element)));
 
+      for (final GetterElement getter in element.supertype?.getters ?? []) {
+        final copiedGetter = memberCopier.copyGetter(getter);
+        if(copiedGetter != null) {
+          classBuilder.methods.add(copiedGetter);
+        }
+      }
+
+      for (final FieldElement2 field in element.supertype?.element3.fields2 ?? []) {
+        final copiedField = memberCopier.copyField(field);
+        if(copiedField != null) {
+          classBuilder.fields.add(copiedField);
+        }
+      }
+
+      final runBuildMethod = element.supertype?.element3.methods2.where((method) => method.name3 == "runBuild").firstOrNull;
+      if(runBuildMethod != null) {
+        final copiedMethod = memberCopier.copyMethod(runBuildMethod, true);
+        if(copiedMethod != null) {
+          classBuilder.methods.add(copiedMethod);
+        }
+      }
+
       // Add seeded constructor
       final seedType = _seedFinder.getNonVoidSeedType(element);
       if (seedType != null) {
-        builder.fields.add(
+        classBuilder.fields.add(
           Field(
             (field) => field
               ..name = "seedBuilder"
@@ -71,38 +98,25 @@ class SimpleNotifierDelegate
                   .build(),
           ),
         );
-        builder.constructors.add(Constructor((constructor) => constructor
+        classBuilder.constructors.add(Constructor((constructor) => constructor
           ..requiredParameters.add(Parameter(
             (param) => param
               ..toThis = true
               ..name = "seedBuilder",
           ))));
       }
-
       // Add stubbed method overrides.
-      builder.methods.addAll(
+      classBuilder.methods.addAll(
         _methodGenerator.generateMethods(
           element,
           seedValueProvided: seedType != null,
-          generateKeepAlive: _isAutoDisposedNotifier(element.thisType),
         ),
       );
     });
   }
 
-  bool _isAutoDisposedNotifier(analyzer.DartType type) {
-    const typeChecker = TypeChecker.any(
-      [
-        TypeChecker.fromRuntime(AutoDisposeNotifier),
-        TypeChecker.fromRuntime(AutoDisposeAsyncNotifier),
-        TypeChecker.fromRuntime(AutoDisposeStreamNotifier),
-      ],
-    );
-    return typeChecker.isSuperTypeOf(type);
-  }
-
-  Set<FakeType> _generateFakeTypes(ClassElement classElement) {
-    final publicMethods = classElement.methods.where((method) => method.isPublic);
+  Set<FakeType> _generateFakeTypes(ClassElement2 classElement) {
+    final publicMethods = classElement.methods2.where((method) => method.isPublic);
     final returnTypes = publicMethods.map((method) => method.returnType).toSet();
     return _fakeTypeCodeBuilder.generateFakeTypes(returnTypes);
   }

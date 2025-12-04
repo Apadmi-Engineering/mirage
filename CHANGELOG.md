@@ -1,3 +1,7 @@
+## 1.0.0-dev.0
+
+* Adds support for Riverpod version 3.X.
+
 ## 0.4.1
 
 * Fixes an issue where implementations of sealed types were being generated, leading to compilation errors

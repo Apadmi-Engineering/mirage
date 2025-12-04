@@ -3,14 +3,15 @@
 // ignore_for_file: invalid_use_of_internal_member, unused_element
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:riverpod/src/async_notifier.dart' as _i1;
+import 'package:riverpod/src/providers/async_notifier.dart' as _i1;
 import 'package:mockito/mockito.dart' as _i2;
 import 'input.dart' as _i3;
 import 'dart:async' as _i4;
-import 'package:mockito/src/dummies.dart' as _i5;
+import 'package:riverpod/src/framework.dart' as _i5;
+import 'package:mockito/src/dummies.dart' as _i6;
 
 // Mirage generated mock of class [TestNotifier].
-class MockTestNotifier extends _i1.AutoDisposeAsyncNotifier<String>
+class MockTestNotifier extends _i1.$AsyncNotifier<String>
     with _i2.Mock
     implements _i3.TestNotifier {
   MockTestNotifier(this.seedBuilder);
@@ -18,27 +19,33 @@ class MockTestNotifier extends _i1.AutoDisposeAsyncNotifier<String>
   _i4.FutureOr<String> Function() seedBuilder;
 
   @override
+  runBuild() {
+    {
+      final created = build();
+      final ref = this.ref as _i5.$Ref<_i5.AsyncValue<String>, String>;
+      final element = ref.element as _i5.$ClassProviderElement<
+          _i5.AnyNotifier<_i5.AsyncValue<String>, String>,
+          _i5.AsyncValue<String>,
+          Object?,
+          Object?>;
+      element.handleValue(ref, created);
+    }
+  }
+
+  @override
   _i4.FutureOr<String> build() async {
-    // keepAlive() used so mock instance with stubbed/real calls isn't disposed.
-    ref.keepAlive();
-    return noSuchMethod(
-      Invocation.method(#build, []),
-      returnValueForMissingStub: seedBuilder(),
-    );
+    return noSuchMethod(Invocation.method(#build, []),
+        returnValueForMissingStub: seedBuilder());
   }
 
   @override
   String someMethod() {
     return noSuchMethod(
       Invocation.method(#someMethod, []),
-      returnValueForMissingStub: _i5.dummyValue<String>(
-        this,
-        Invocation.method(#someMethod, []),
-      ),
-      returnValue: _i5.dummyValue<String>(
-        this,
-        Invocation.method(#someMethod, []),
-      ),
+      returnValueForMissingStub:
+          _i6.dummyValue<String>(this, Invocation.method(#someMethod, [])),
+      returnValue:
+          _i6.dummyValue<String>(this, Invocation.method(#someMethod, [])),
     );
   }
 
@@ -46,24 +53,24 @@ class MockTestNotifier extends _i1.AutoDisposeAsyncNotifier<String>
   _i4.Future<int> someAsyncMethod() async {
     return noSuchMethod(
       Invocation.method(#someAsyncMethod, []),
-      returnValueForMissingStub: _i5.dummyValue<int>(
-        this,
-        Invocation.method(#someAsyncMethod, []),
-      ),
-      returnValue: _i5.dummyValue<int>(
-        this,
-        Invocation.method(#someAsyncMethod, []),
-      ),
+      returnValueForMissingStub:
+          _i6.dummyValue<int>(this, Invocation.method(#someAsyncMethod, [])),
+      returnValue:
+          _i6.dummyValue<int>(this, Invocation.method(#someAsyncMethod, [])),
     );
   }
 
   @override
   void sideEffect() {
-    return noSuchMethod(Invocation.method(#sideEffect, []));
+    return noSuchMethod(
+      Invocation.method(#sideEffect, []),
+    );
   }
 
   @override
   _i4.Future<void> asyncSideEffect() async {
-    return noSuchMethod(Invocation.method(#asyncSideEffect, []));
+    return noSuchMethod(
+      Invocation.method(#asyncSideEffect, []),
+    );
   }
 }

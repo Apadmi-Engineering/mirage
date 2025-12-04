@@ -1,4 +1,4 @@
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:mirage/src/seed_finder.dart';
 import 'package:mockito/annotations.dart';
@@ -10,8 +10,8 @@ import 'seed_finder_test.mocks.dart';
 @GenerateNiceMocks([
   MockSpec<InterfaceType>(),
   MockSpec<VoidType>(),
-  MockSpec<ClassElement>(),
-  MockSpec<MethodElement>(),
+  MockSpec<ClassElement2>(),
+  MockSpec<MethodElement2>(),
 ])
 void main() {
   group("Seed finder unit tests", () {
@@ -24,11 +24,11 @@ void main() {
     test("getSeedType - builder returns void - returns null", () {
       // Setup
       final builderType = MockVoidType();
-      final methodFixture = MockMethodElement()
-        ..stubReturn((it) => it.name, "build")
+      final methodFixture = MockMethodElement2()
+        ..stubReturn((it) => it.name3, "build")
         ..stubReturn((it) => it.returnType, builderType);
-      final input = MockClassElement()
-        ..stubReturn((it) => it.methods, [methodFixture]);
+      final input = MockClassElement2()
+        ..stubReturn((it) => it.methods2, [methodFixture]);
 
       // Run test & verify
       expect(sut.getNonVoidSeedType(input), null);
@@ -37,11 +37,11 @@ void main() {
     test("getSeedType - builder returns interface - returns null", () {
       // Setup
       final builderType = MockInterfaceType();
-      final methodFixture = MockMethodElement()
-        ..stubReturn((it) => it.name, "build")
+      final methodFixture = MockMethodElement2()
+        ..stubReturn((it) => it.name3, "build")
         ..stubReturn((it) => it.returnType, builderType);
-      final input = MockClassElement()
-        ..stubReturn((it) => it.methods, [methodFixture]);
+      final input = MockClassElement2()
+        ..stubReturn((it) => it.methods2, [methodFixture]);
 
       // Run test & verify
       expect(sut.getNonVoidSeedType(input), builderType);
@@ -53,11 +53,11 @@ void main() {
       final builderType = MockInterfaceType()
         ..stubReturn((it) => it.typeArguments, [builderParamType])
         ..stubReturn((it) => it.isDartAsyncFuture, true);
-      final methodFixture = MockMethodElement()
-        ..stubReturn((it) => it.name, "build")
+      final methodFixture = MockMethodElement2()
+        ..stubReturn((it) => it.name3, "build")
         ..stubReturn((it) => it.returnType, builderType);
-      final input = MockClassElement()
-        ..stubReturn((it) => it.methods, [methodFixture]);
+      final input = MockClassElement2()
+        ..stubReturn((it) => it.methods2, [methodFixture]);
 
       // Run test & verify
       expect(sut.getNonVoidSeedType(input), null);
@@ -69,11 +69,11 @@ void main() {
       final builderType = MockInterfaceType()
         ..stubReturn((it) => it.typeArguments, [builderParamType])
         ..stubReturn((it) => it.isDartAsyncFuture, true);
-      final methodFixture = MockMethodElement()
-        ..stubReturn((it) => it.name, "build")
+      final methodFixture = MockMethodElement2()
+        ..stubReturn((it) => it.name3, "build")
         ..stubReturn((it) => it.returnType, builderType);
-      final input = MockClassElement()
-        ..stubReturn((it) => it.methods, [methodFixture]);
+      final input = MockClassElement2()
+        ..stubReturn((it) => it.methods2, [methodFixture]);
 
       // Run test & verify
       expect(sut.getNonVoidSeedType(input), builderType);
@@ -84,11 +84,11 @@ void main() {
       final builderParamType = MockVoidType();
       final builderType = MockInterfaceType()
         ..stubReturn((it) => it.typeArguments, [builderParamType]);
-      final methodFixture = MockMethodElement()
-        ..stubReturn((it) => it.name, "build")
+      final methodFixture = MockMethodElement2()
+        ..stubReturn((it) => it.name3, "build")
         ..stubReturn((it) => it.returnType, builderType);
-      final input = MockClassElement()
-        ..stubReturn((it) => it.methods, [methodFixture]);
+      final input = MockClassElement2()
+        ..stubReturn((it) => it.methods2, [methodFixture]);
 
       // Run test & verify
       expect(sut.getNonVoidSeedType(input), builderType);
@@ -100,11 +100,11 @@ void main() {
       final builderType = MockInterfaceType()
         ..stubReturn((it) => it.typeArguments, [builderParamType])
         ..stubReturn((it) => it.isDartAsyncStream, true);
-      final methodFixture = MockMethodElement()
-        ..stubReturn((it) => it.name, "build")
+      final methodFixture = MockMethodElement2()
+        ..stubReturn((it) => it.name3, "build")
         ..stubReturn((it) => it.returnType, builderType);
-      final input = MockClassElement()
-        ..stubReturn((it) => it.methods, [methodFixture]);
+      final input = MockClassElement2()
+        ..stubReturn((it) => it.methods2, [methodFixture]);
 
       // Run test & verify
       expect(sut.getNonVoidSeedType(input), null);
@@ -116,11 +116,11 @@ void main() {
       final builderType = MockInterfaceType()
         ..stubReturn((it) => it.typeArguments, [builderParamType])
         ..stubReturn((it) => it.isDartAsyncStream, true);
-      final methodFixture = MockMethodElement()
-        ..stubReturn((it) => it.name, "build")
+      final methodFixture = MockMethodElement2()
+        ..stubReturn((it) => it.name3, "build")
         ..stubReturn((it) => it.returnType, builderType);
-      final input = MockClassElement()
-        ..stubReturn((it) => it.methods, [methodFixture]);
+      final input = MockClassElement2()
+        ..stubReturn((it) => it.methods2, [methodFixture]);
 
       // Run test & verify
       expect(sut.getNonVoidSeedType(input), builderType);

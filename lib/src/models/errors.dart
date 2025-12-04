@@ -1,4 +1,4 @@
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/dart/element/type.dart';
 
 class InvalidTypeMockedError extends Error {
@@ -30,7 +30,7 @@ class ElementNotFoundError extends Error {
 }
 
 class TypeNameNotFoundError extends Error {
-  Element element;
+  Element2 element;
   final DartType type;
 
   TypeNameNotFoundError(
@@ -40,7 +40,7 @@ class TypeNameNotFoundError extends Error {
 
   @override
   String toString() =>
-      "Element, ${element.getDisplayString()} for type ${type.getDisplayString()}, has no name";
+      "Element, ${element.displayString2()} for type ${type.getDisplayString()}, has no name";
 }
 
 class ClassNotFound extends Error {

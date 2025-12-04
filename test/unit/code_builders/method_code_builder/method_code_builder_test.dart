@@ -1,4 +1,4 @@
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:code_builder/code_builder.dart';
 import 'package:mirage/src/code_builders/fake_type_code_builder.dart';
@@ -14,8 +14,8 @@ import 'method_code_builder_test.mocks.dart';
   MockSpec<DartType>(),
   MockSpec<FakeTypeCodeBuilder>(),
   MockSpec<TypeReferencer>(),
-  MockSpec<MethodElement>(),
-  MockSpec<ParameterElement>(),
+  MockSpec<MethodElement2>(),
+  MockSpec<FormalParameterElement>(),
 ])
 void main() {
   group("Method code builder unit tests", () {
@@ -34,17 +34,17 @@ void main() {
         () {
       // Setup
       final parameterTypeFixture = MockDartType();
-      final parameterFixture = MockParameterElement();
-      when(parameterFixture.name).thenReturn("p1");
+      final parameterFixture = MockFormalParameterElement();
+      when(parameterFixture.name3).thenReturn("p1");
       when(parameterFixture.type).thenReturn(parameterTypeFixture);
       when(parameterFixture.isRequired).thenReturn(true);
       when(parameterFixture.isOptional).thenReturn(false);
 
       final returnTypeFixture = MockDartType();
       when(returnTypeFixture.isDartAsyncFuture).thenReturn(true);
-      final methodElementFixture = MockMethodElement();
+      final methodElementFixture = MockMethodElement2();
       when(methodElementFixture.returnType).thenReturn(returnTypeFixture);
-      when(methodElementFixture.parameters).thenReturn([parameterFixture]);
+      when(methodElementFixture.formalParameters).thenReturn([parameterFixture]);
 
       when(mockTypeReferencer.obtainReferenceForType(parameterTypeFixture, any))
           .thenReturn(
@@ -106,17 +106,17 @@ void main() {
         () {
       // Setup
       final parameterTypeFixture = MockDartType();
-      final parameterFixture = MockParameterElement();
-      when(parameterFixture.name).thenReturn("p1");
+      final parameterFixture = MockFormalParameterElement();
+      when(parameterFixture.name3).thenReturn("p1");
       when(parameterFixture.type).thenReturn(parameterTypeFixture);
       when(parameterFixture.isRequired).thenReturn(false);
       when(parameterFixture.isOptional).thenReturn(true);
 
       final returnTypeFixture = MockDartType();
       when(returnTypeFixture.isDartAsyncFuture).thenReturn(true);
-      final methodElementFixture = MockMethodElement();
+      final methodElementFixture = MockMethodElement2();
       when(methodElementFixture.returnType).thenReturn(returnTypeFixture);
-      when(methodElementFixture.parameters).thenReturn([parameterFixture]);
+      when(methodElementFixture.formalParameters).thenReturn([parameterFixture]);
 
       when(mockTypeReferencer.obtainReferenceForType(parameterTypeFixture, any))
           .thenReturn(
@@ -187,7 +187,7 @@ void main() {
         () {
       // Setup
       final returnTypeFixture = MockDartType();
-      final methodElementFixture = MockMethodElement();
+      final methodElementFixture = MockMethodElement2();
       when(methodElementFixture.returnType).thenReturn(returnTypeFixture);
 
       when(mockTypeReferencer.obtainReferenceForType(returnTypeFixture, any))
@@ -229,7 +229,7 @@ void main() {
         () {
       // Setup
       final returnTypeFixture = MockDartType();
-      final methodElementFixture = MockMethodElement();
+      final methodElementFixture = MockMethodElement2();
       when(returnTypeFixture.isDartAsyncStream).thenReturn(true);
       when(methodElementFixture.returnType).thenReturn(returnTypeFixture);
 
@@ -269,7 +269,7 @@ void main() {
 
     test("generateMethod - private method - returns null", () {
       // Setup
-      final methodElementFixture = MockMethodElement();
+      final methodElementFixture = MockMethodElement2();
       when(methodElementFixture.isPublic).thenReturn(false);
 
       // Run test + verify
@@ -279,11 +279,11 @@ void main() {
     test("generateMethod - generates expected sync method", () {
       // Setup
       final returnTypeFixture = MockDartType();
-      final methodElementFixture = MockMethodElement();
+      final methodElementFixture = MockMethodElement2();
       when(methodElementFixture.isPublic).thenReturn(true);
       when(methodElementFixture.returnType).thenReturn(returnTypeFixture);
-      when(methodElementFixture.parameters).thenReturn([]);
-      when(methodElementFixture.name).thenReturn("method");
+      when(methodElementFixture.formalParameters).thenReturn([]);
+      when(methodElementFixture.name3).thenReturn("method");
       when(mockTypeReferencer.obtainReferenceForType(any, any)).thenReturn(
         const Reference("String", "dart:core"),
       );
@@ -330,11 +330,11 @@ void main() {
       // Setup
       final returnTypeFixture = MockDartType();
       when(returnTypeFixture.isDartAsyncFuture).thenReturn(true);
-      final methodElementFixture = MockMethodElement();
+      final methodElementFixture = MockMethodElement2();
       when(methodElementFixture.isPublic).thenReturn(true);
       when(methodElementFixture.returnType).thenReturn(returnTypeFixture);
-      when(methodElementFixture.parameters).thenReturn([]);
-      when(methodElementFixture.name).thenReturn("method");
+      when(methodElementFixture.formalParameters).thenReturn([]);
+      when(methodElementFixture.name3).thenReturn("method");
       when(mockTypeReferencer.obtainReferenceForType(any, any)).thenReturn(
         const Reference("Future<String>", "dart:core"),
       );
@@ -381,11 +381,11 @@ void main() {
       // Setup
       final returnTypeFixture = MockDartType();
       when(returnTypeFixture.isDartAsyncStream).thenReturn(true);
-      final methodElementFixture = MockMethodElement();
+      final methodElementFixture = MockMethodElement2();
       when(methodElementFixture.isPublic).thenReturn(true);
       when(methodElementFixture.returnType).thenReturn(returnTypeFixture);
-      when(methodElementFixture.parameters).thenReturn([]);
-      when(methodElementFixture.name).thenReturn("method");
+      when(methodElementFixture.formalParameters).thenReturn([]);
+      when(methodElementFixture.name3).thenReturn("method");
       when(mockTypeReferencer.obtainReferenceForType(any, any)).thenReturn(
         const Reference("Stream<String>", "dart:core"),
       );
