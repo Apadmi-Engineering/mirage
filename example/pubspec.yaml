@@ -10,7 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_riverpod: ^3.0.1
-  mirage:
+  mirage_generator:
     path: ../
   mockito: ^5.4.5
   riverpod_annotation: ^3.0.1

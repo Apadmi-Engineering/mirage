@@ -1,4 +1,4 @@
-import 'package:mirage/mirage.dart';
+import 'package:mirage_generator/mirage_generator.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'input.g.dart';

@@ -1,6 +1,6 @@
 import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/dart/element/type.dart';
-import 'package:mirage/src/models/errors.dart';
+import 'package:mirage_generator/src/models/errors.dart';
 
 class SeedFinder {
   DartType? getNonVoidSeedType(ClassElement2 clazz) {

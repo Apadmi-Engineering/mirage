@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:build_test/build_test.dart';
-import 'package:mirage/src/builder.dart';
+import 'package:mirage_generator/src/builder.dart';
 import 'package:test/test.dart';
 import 'package:meta/meta.dart';
 

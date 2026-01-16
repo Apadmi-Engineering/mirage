@@ -1,6 +1,6 @@
 builders:
   mirageBuilder:
-    import: "package:mirage/src/builder.dart"
+    import: "package:mirage_generator/src/builder.dart"
     builder_factories: ["buildMirages"]
     build_extensions: {".dart": [".mirage.dart", ".debug.mirage.dart"]}
     build_to: source

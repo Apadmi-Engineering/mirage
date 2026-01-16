@@ -4,9 +4,9 @@ import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:build/build.dart';
 import 'package:code_builder/code_builder.dart';
-import 'package:mirage/src/library_validator.dart';
-import 'package:mirage/src/models/errors.dart';
-import 'package:mirage/src/service_locator.dart';
+import 'package:mirage_generator/src/library_validator.dart';
+import 'package:mirage_generator/src/models/errors.dart';
+import 'package:mirage_generator/src/service_locator.dart';
 
 class MirageBuilder implements Builder {
   @override

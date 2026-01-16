@@ -1,4 +1,4 @@
-import 'package:mirage/mirage.dart';
+import 'package:mirage_generator/mirage_generator.dart';
 import 'package:mirage_example/src/notifiers/notifier/notifier.dart';
 import 'package:mockito/mockito.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

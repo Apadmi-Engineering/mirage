@@ -1,6 +1,6 @@
 import 'package:analyzer/dart/element/type_system.dart';
 import 'package:code_builder/code_builder.dart';
-import 'package:mirage/src/import_finder.dart';
+import 'package:mirage_generator/src/import_finder.dart';
 import 'package:analyzer/dart/element/type.dart' as analyzer;
 
 class TypeReferencer {
