@@ -21,19 +21,6 @@ to generate Mockito mocks of Riverpod Notifiers in a way that allows for...
 - Argument matchers
 - Verifications
 
-## How do I install it?
-
-Flutter’s pub package manager supports dependencies sourced directly from Git repos in the following manner.
-
-```
-dependencies:
-  some_dependency:
-    git:
-      url: git@github.com:Apadmi-Engineering/Mirage.git
-      tag_pattern: v{{version}}
-    version: ^1.0.0
-```
-
 ## How do I use it?
 
 The central aim of this package is that usage is similar to that of Mockito.
