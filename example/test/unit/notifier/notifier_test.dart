@@ -2,7 +2,6 @@ import 'package:mirage_generator/mirage_generator.dart';
 import 'package:mirage_example/src/notifiers/notifier/notifier.dart';
 import 'package:mockito/mockito.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:test/scaffolding.dart';
 import 'package:test/test.dart';
 
 import 'notifier_test.mirage.dart';
