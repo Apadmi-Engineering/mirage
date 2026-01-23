@@ -13,9 +13,10 @@ Three parts of a good unit test are:
 - **Verify** - Assert the results of **act** either by checking outputs or 
 expecting interactions with other entities.
 
-Riverpod's core unit test offering makes the above cumbersome and error-prone when 
-using Notifiers. That's where this package comes in, it attempts to be a solution 
-to generate Mockito mocks of Riverpod Notifiers in a way that allows for...
+Riverpod's core unit test offering doesn't include complete utilities for 
+mocking Notifiers. That's where this package comes in, it attempts to be a 
+solution to generate Mockito mocks of Riverpod Notifiers in a way that allows 
+for...
 
 - Stubbing
 - Argument matchers
