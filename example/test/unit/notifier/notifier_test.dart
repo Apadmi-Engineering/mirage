@@ -1,12 +1,12 @@
-import 'package:mirage_generator/mirage_generator.dart';
-import 'package:mirage_example/src/notifiers/notifier/notifier.dart';
+import 'package:flumepod/flumepod.dart';
+import 'package:flumepod_example/src/notifiers/notifier/notifier.dart';
 import 'package:mockito/mockito.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:test/test.dart';
 
-import 'notifier_test.mirage.dart';
+import 'notifier_test.flumepod.dart';
 
-@GenerateMirage(providerTypesToMock: {DummySource})
+@Flumepod(providerTypesToMock: {DummySource})
 void main() async {
   test("Test", () async {
     // Setup

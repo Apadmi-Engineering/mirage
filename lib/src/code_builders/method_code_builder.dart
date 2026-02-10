@@ -1,10 +1,10 @@
 import 'package:analyzer/dart/element/element2.dart';
 import 'package:code_builder/code_builder.dart';
-import 'package:mirage_generator/src/code_builders/fake_type_code_builder.dart';
-import 'package:mirage_generator/src/models/fake_type.dart';
-import 'package:mirage_generator/src/type_referencer.dart';
-import 'package:mirage_generator/src/util/block_builder_utils.dart';
-import 'package:mirage_generator/src/util/method_builder_utils.dart';
+import 'package:flumepod/src/code_builders/fake_type_code_builder.dart';
+import 'package:flumepod/src/models/fake_type.dart';
+import 'package:flumepod/src/type_referencer.dart';
+import 'package:flumepod/src/util/block_builder_utils.dart';
+import 'package:flumepod/src/util/method_builder_utils.dart';
 
 class MethodCodeBuilder {
   static const _keepAliveInsert =

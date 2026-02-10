@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:code_builder/code_builder.dart';
-import 'package:mirage_generator/src/models/errors.dart';
+import 'package:flumepod/src/models/errors.dart';
 import 'package:source_gen/source_gen.dart';
 
 abstract class ClassCodeBuilderDelegate {

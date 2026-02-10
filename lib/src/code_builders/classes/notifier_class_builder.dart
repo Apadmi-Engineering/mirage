@@ -2,14 +2,14 @@ import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/dart/element/type.dart' as analyzer;
 import 'package:code_builder/code_builder.dart';
-import 'package:mirage_generator/src/code_builders/classes/class_code_builder.dart';
-import 'package:mirage_generator/src/code_builders/fake_type_code_builder.dart';
-import 'package:mirage_generator/src/code_builders/method_code_builder.dart';
-import 'package:mirage_generator/src/import_finder.dart';
-import 'package:mirage_generator/src/models/errors.dart';
-import 'package:mirage_generator/src/models/fake_type.dart';
-import 'package:mirage_generator/src/seed_finder.dart';
-import 'package:mirage_generator/src/type_referencer.dart';
+import 'package:flumepod/src/code_builders/classes/class_code_builder.dart';
+import 'package:flumepod/src/code_builders/fake_type_code_builder.dart';
+import 'package:flumepod/src/code_builders/method_code_builder.dart';
+import 'package:flumepod/src/import_finder.dart';
+import 'package:flumepod/src/models/errors.dart';
+import 'package:flumepod/src/models/fake_type.dart';
+import 'package:flumepod/src/seed_finder.dart';
+import 'package:flumepod/src/type_referencer.dart';
 
 class NotifierClassBuilder
     with ClassCodeBuilderUtils
@@ -55,7 +55,7 @@ class NotifierClassBuilder
       // Class signature
       classBuilder
         ..name = "Mock$typeName"
-        ..docs.add("// Mirage generated mock of class [$typeName].")
+        ..docs.add("// Flumepod generated mock of class [$typeName].")
         ..extend = _typeReferencer.obtainReferenceForType(superType)
         ..mixins.add(refer("Mock", "package:mockito/mockito.dart"))
         ..implements.add(refer(typeName, _importFinder.getImportUrl(element)));
