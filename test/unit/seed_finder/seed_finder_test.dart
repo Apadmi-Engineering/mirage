@@ -1,6 +1,6 @@
 import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/dart/element/type.dart';
-import 'package:mirage/src/seed_finder.dart';
+import 'package:flumepod/src/seed_finder.dart';
 import 'package:mockito/annotations.dart';
 import 'package:test/test.dart';
 

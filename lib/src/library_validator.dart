@@ -1,12 +1,13 @@
 import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/dart/element/type.dart';
-import 'package:mirage/mirage.dart';
-import 'package:mirage/src/models/errors.dart';
+import 'package:flumepod/flumepod.dart';
+import 'package:flumepod/src/models/errors.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:source_gen/source_gen.dart';
 
 class LibraryValidator {
-  static const _annotationTypeChecker = TypeChecker.typeNamed(GenerateMirage, inPackage: "mirage");
+  static const _annotationTypeChecker =
+      TypeChecker.typeNamed(Flumepod, inPackage: "flumepod");
 
   final LibraryElement2 library;
 

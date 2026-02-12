@@ -1,7 +1,3 @@
-<p align="center">
-    <img src="./assets/mark.png" height=100 width=404>
-</p>
-
 A generator for creating [Mockito](https://pub.dev/packages/mockito) mocks of [Riverpod](https://riverpod.dev/) notifiers for use in unit testing.
 
 ## Why is this needed?
@@ -13,32 +9,20 @@ Three parts of a good unit test are:
 - **Verify** - Assert the results of **act** either by checking outputs or 
 expecting interactions with other entities.
 
-Riverpod's core unit test offering makes the above cumbersome and error-prone when 
-using Notifiers. That's where this package comes in, it attempts to be a solution 
-to generate Mockito mocks of Riverpod Notifiers in a way that allows for...
+Riverpod's core unit test offering doesn't include complete utilities for 
+mocking Notifiers. That's where this package comes in, it attempts to be a 
+solution to generate Mockito mocks of Riverpod Notifiers in a way that allows 
+for...
 
 - Stubbing
 - Argument matchers
 - Verifications
 
-## How do I install it?
-
-Flutter’s pub package manager supports dependencies sourced directly from Git repos in the following manner.
-
-```
-dependencies:
-  some_dependency:
-    git:
-      url: git@github.com:Apadmi-Engineering/Mirage.git
-      tag_pattern: v{{version}}
-    version: ^1.0.0
-```
-
 ## How do I use it?
 
 The central aim of this package is that usage is similar to that of Mockito.
 
-Add the `@GenerateMirage` annotation on the `main` method in your unit test file, 
+Add the `@Flumepod` annotation on the `main` method in your unit test file, 
 this annotation takes a single, named argument, `providerTypesToMock`. The value should 
 be a `Set` of `Type`s that are providers.
 
@@ -65,7 +49,7 @@ Generating a mock of `MyNotifier` in a unit test would look like...
 
 `my_other_notifier_test.dart`
 ```dart
-@GenerateMirage(providerTypesToMock: {MyNotifier})
+@Flumepod(providerTypesToMock: {MyNotifier})
 void main() async {
 
     test("My test", () async {
@@ -106,7 +90,7 @@ To use argument matchers such as `any`, `anyNamed`; you'll need to obtain the in
 container.read(myNotifier.notifier) as MockMyNotifier
 ```
 
-This is because Mockitos argument matchers are nullable, however the parameters contained in the interface of your notifier probably aren't. Mirage solves this by making all parameters in mock classes nullable. However, when you read your notifier from the provider container, you read it "as" the original interface. Hence, the need to cast it as the mocked version (because it is).
+This is because Mockitos argument matchers are nullable, however the parameters contained in the interface of your notifier probably aren't. Flumepod solves this by making all parameters in mock classes nullable. However, when you read your notifier from the provider container, you read it "as" the original interface. Hence, the need to cast it as the mocked version (because it is).
 
 ## Problems
 

@@ -1,8 +1,8 @@
 import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:code_builder/code_builder.dart';
-import 'package:mirage/src/import_finder.dart';
-import 'package:mirage/src/models/fake_type.dart';
+import 'package:flumepod/src/import_finder.dart';
+import 'package:flumepod/src/models/fake_type.dart';
 import 'package:source_gen/source_gen.dart';
 
 class FakeTypeCodeBuilder {

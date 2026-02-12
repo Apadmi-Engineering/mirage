@@ -43,5 +43,5 @@ app.*.map.json
 /android/app/release
 
 # Generated code
-*.mirage.dart
+*.flumepod.dart
 *.g.dart

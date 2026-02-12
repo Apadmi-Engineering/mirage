@@ -1,5 +1,5 @@
-class GenerateMirage {
+class Flumepod {
   final Set<Type> providerTypesToMock;
 
-  const GenerateMirage({required this.providerTypesToMock});
+  const Flumepod({required this.providerTypesToMock});
 }
