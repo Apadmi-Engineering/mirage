@@ -17,6 +17,9 @@ jobs:
       - name: Run unit tests
         run: |
           dart run test test/unit
+      - name: Run integration tests
+        run: |
+          dart run build_runner test -- test/integration
       - name: Run golden tests
         run: |
           dart run build_runner test -- test/golden
