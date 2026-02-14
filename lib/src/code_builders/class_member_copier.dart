@@ -2,8 +2,8 @@ import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element2.dart';
 import 'package:code_builder/code_builder.dart' hide Expression;
-import 'package:mirage/src/util/object_utils.dart';
-import 'package:mirage/src/util/symbol_resolver.dart';
+import 'package:flumepod/src/util/object_utils.dart';
+import 'package:flumepod/src/util/symbol_resolver.dart';
 
 abstract interface class MemberCopier {
   Method? copyGetter(GetterElement element);

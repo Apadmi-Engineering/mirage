@@ -1,3 +1,3 @@
-# mirage_example
+# flumepod_example
 
 A new Flutter project.

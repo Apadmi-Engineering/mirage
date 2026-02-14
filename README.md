@@ -1,8 +1,4 @@
-<p align="center">
-    <img src="./assets/mark.png" height=100 width=404>
-</p>
-
-A generator for creating [mockito](https://pub.dev/packages/mockito) mocks of [Riverpod](https://riverpod.dev/) notifiers for use in unit testing.
+A generator for creating [Mockito](https://pub.dev/packages/mockito) mocks of [Riverpod](https://riverpod.dev/) notifiers for use in unit testing.
 
 ## Why is this needed?
 
@@ -13,31 +9,21 @@ Three parts of a good unit test are:
 - **Verify** - Assert the results of **act** either by checking outputs or 
 expecting interactions with other entities.
 
-Riverpod's core unit test offering makes the above cumbersome and error-prone when 
-using Notifiers. That's where this package comes in, it attempts to be a solution 
-to generate Mockito mocks of Riverpod Notifiers in a way that allows for...
+Riverpod's core unit test offering doesn't include complete utilities for 
+mocking Notifiers. That's where this package comes in, it attempts to be a 
+solution to generate Mockito mocks of Riverpod Notifiers in a way that allows 
+for...
 
 - Stubbing
 - Argument matchers
 - Verifications
 
-## How do I install it?
-
-Flutter’s pub package manager supports dependencies sourced directly from Git repos with various options to reference specific commits.
-```
-dependencies:
-  some_dependency:
-    git:
-      url: git@github.com:Apadmi-Engineering/Mirage.git
-      ref: <Optional, commit ref/tag/branch HEAD>
-```
-
 ## How do I use it?
 
-Hopefully in a manner similar to normal usage of Mockito.
+The central aim of this package is that usage is similar to that of Mockito.
 
-Add the `@GenerateMirage` annotation on the `main` method in your unit test file, 
-this annotation takes a single argument, `providerTypesToMock`. The value should 
+Add the `@Flumepod` annotation on the `main` method in your unit test file, 
+this annotation takes a single, named argument, `providerTypesToMock`. The value should 
 be a `Set` of `Type`s that are providers.
 
 For example...
@@ -58,17 +44,22 @@ class MyNotifier extends _$MyNotifier {
 
 Generating a mock of `MyNotifier` in a unit test would look like...
 
+> [!NOTE]
+> **1.X Migration note:** Riverpod 3.X introduces [automatic retry behaviour](https://riverpod.dev/docs/whats_new#automatic-retry) whereby providers that emit errors automatically invalidate and try again. This doesn't allow you to assert error behaviour in unit testing and so it is recommended to disable automatric retries in unit tests ([see here](https://riverpod.dev/docs/concepts2/retry#disabling-retry)).
+
 `my_other_notifier_test.dart`
 ```dart
-@GenerateMirage(providerTypesToMock: {MyNotifier})
+@Flumepod(providerTypesToMock: {MyNotifier})
 void main() async {
 
     test("My test", () async {
         // Override provider with mock instance.
-        final container = createContainer(
+        final container = ProviderContainer.test(
             overrides: [
                 myNotifierProvider.overrideWith(MockMyNotifier(() => initialState))
-            ]
+            ],
+            // You'll want to disable automatic retry to assert exception behaviour.
+            retry: (_, _) => null,
         );
 
         // To stub (with arg matchers).
@@ -99,7 +90,7 @@ To use argument matchers such as `any`, `anyNamed`; you'll need to obtain the in
 container.read(myNotifier.notifier) as MockMyNotifier
 ```
 
-This is because Mockitos argument matchers are nullable, however the parameters contained in the interface of your notifier probably aren't. Mirage solves this by making all parameters in mock classes nullable. However, when you read your notifier from the provider container, you read it "as" the original interface. Hence, the need to cast it as the mocked version (because it is).
+This is because Mockitos argument matchers are nullable, however the parameters contained in the interface of your notifier probably aren't. Flumepod solves this by making all parameters in mock classes nullable. However, when you read your notifier from the provider container, you read it "as" the original interface. Hence, the need to cast it as the mocked version (because it is).
 
 ## Problems
 

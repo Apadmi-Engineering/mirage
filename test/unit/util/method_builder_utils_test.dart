@@ -3,7 +3,7 @@ import 'dart:core';
 import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:code_builder/code_builder.dart';
-import 'package:mirage/src/util/method_builder_utils.dart';
+import 'package:flumepod/src/util/method_builder_utils.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';

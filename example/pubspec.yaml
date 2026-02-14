@@ -1,4 +1,4 @@
-name: mirage_example
+name: flumepod_example
 description: "A new Flutter project."
 publish_to: 'none'
 version: 0.1.0
@@ -10,7 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_riverpod: ^3.0.1
-  mirage:
+  flumepod:
     path: ../
   mockito: ^5.4.5
   riverpod_annotation: ^3.0.1

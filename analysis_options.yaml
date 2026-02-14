@@ -6,5 +6,5 @@ include: package:flutter_lints/flutter.yaml
 analyzer:
   exclude:
     - test/**/input.dart
-    - test/**/*.mirage.dart
+    - test/**/*.flumepod.dart
     - test/**/*.g.dart

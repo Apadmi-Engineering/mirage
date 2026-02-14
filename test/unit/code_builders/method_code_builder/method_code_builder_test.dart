@@ -1,9 +1,9 @@
 import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:code_builder/code_builder.dart';
-import 'package:mirage/src/code_builders/fake_type_code_builder.dart';
-import 'package:mirage/src/code_builders/method_code_builder.dart';
-import 'package:mirage/src/type_referencer.dart';
+import 'package:flumepod/src/code_builders/fake_type_code_builder.dart';
+import 'package:flumepod/src/code_builders/method_code_builder.dart';
+import 'package:flumepod/src/type_referencer.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';

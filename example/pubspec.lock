@@ -273,6 +273,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.1"
+  flumepod:
+    dependency: "direct main"
+    description:
+      path: ".."
+      relative: true
+    source: path
+    version: "1.0.0-dev.1"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -451,13 +458,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.0"
-  mirage:
-    dependency: "direct main"
-    description:
-      path: ".."
-      relative: true
-    source: path
-    version: "0.4.1"
   mockito:
     dependency: "direct main"
     description:
