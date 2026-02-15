@@ -21,14 +21,13 @@ class MockTestNotifier extends _i1.$StreamNotifier<String>
   @override
   runBuild() {
     {
-      final created = build();
       final ref = this.ref as _i5.$Ref<_i5.AsyncValue<String>, String>;
       final element = ref.element as _i5.$ClassProviderElement<
           _i5.AnyNotifier<_i5.AsyncValue<String>, String>,
           _i5.AsyncValue<String>,
           Object?,
           Object?>;
-      element.handleValue(ref, created);
+      element.handleCreate(ref, build);
     }
   }
 

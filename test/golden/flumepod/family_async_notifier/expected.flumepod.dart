@@ -26,14 +26,13 @@ class MockTestNotifier extends _i1.$AsyncNotifier<String>
   @override
   runBuild() {
     {
-      final created = build(_$args);
       final ref = this.ref as _i6.$Ref<_i6.AsyncValue<String>, String>;
       final element = ref.element as _i6.$ClassProviderElement<
           _i6.AnyNotifier<_i6.AsyncValue<String>, String>,
           _i6.AsyncValue<String>,
           Object?,
           Object?>;
-      element.handleValue(ref, created);
+      element.handleCreate(ref, () => build(_$args));
     }
   }
 
