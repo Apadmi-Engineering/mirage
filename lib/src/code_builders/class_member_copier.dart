@@ -1,6 +1,6 @@
 import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:code_builder/code_builder.dart' hide Expression;
 import 'package:flumepod/src/util/object_utils.dart';
 import 'package:flumepod/src/util/symbol_resolver.dart';
@@ -8,9 +8,9 @@ import 'package:flumepod/src/util/symbol_resolver.dart';
 abstract interface class MemberCopier {
   Method? copyGetter(GetterElement element);
 
-  Field? copyField(FieldElement2 element);
+  Field? copyField(FieldElement element);
 
-  Method? copyMethod(MethodElement2 element, bool isOverride);
+  Method? copyMethod(MethodElement element, bool isOverride);
 }
 
 class MemberCopierImpl implements MemberCopier {
@@ -22,17 +22,17 @@ class MemberCopierImpl implements MemberCopier {
   Method? copyGetter(GetterElement element) =>
       copyGetterImplementation(element)?.let((implementation) {
         return Method((mb) => mb
-          ..name = element.name3
+          ..name = element.name
           ..type = MethodType.getter
           ..lambda = true
           ..body = implementation);
       });
 
   @override
-  Field? copyField(FieldElement2 element) =>
+  Field? copyField(FieldElement element) =>
       copyFieldImplementation(element)?.let((implementation) {
         return Field((fb) => fb
-          ..name = element.name3
+          ..name = element.name
           ..late = element.isLate
           ..modifier =
               element.isFinal ? FieldModifier.final$ : FieldModifier.var$
@@ -40,16 +40,16 @@ class MemberCopierImpl implements MemberCopier {
       });
 
   @override
-  Method? copyMethod(MethodElement2 element, bool isOverride) =>
+  Method? copyMethod(MethodElement element, bool isOverride) =>
       copyMethodImplementation(element, library)?.let((implementation) {
         return Method((mb) => mb
-          ..name = element.name3
+          ..name = element.name
           ..body = implementation
           ..annotations
               .addAll([if (isOverride) CodeExpression(Code("override"))]));
       });
 
-  Code? copyGetterImplementation(TypeParameterizedElement2 element) {
+  Code? copyGetterImplementation(TypeParameterizedElement element) {
     final declaration =
         library.getFragmentDeclaration(element.firstFragment)?.node;
     if (declaration == null) {
@@ -73,9 +73,9 @@ class MemberCopierImpl implements MemberCopier {
     return bodySource;
   }
 
-  Code? copyFieldImplementation(FieldElement2 element) {
+  Code? copyFieldImplementation(FieldElement element) {
     final library =
-        element.session?.getParsedLibraryByElement2(element.library2);
+        element.session?.getParsedLibraryByElement(element.library);
     if (library is! ParsedLibraryResult) {
       return null;
     }
@@ -95,7 +95,7 @@ class MemberCopierImpl implements MemberCopier {
     });
   }
 
-  Code? copyMethodImplementation(MethodElement2 element, ResolvedLibraryResult resolvedLibrary) {
+  Code? copyMethodImplementation(MethodElement element, ResolvedLibraryResult resolvedLibrary) {
     final declaration =
         resolvedLibrary.getFragmentDeclaration(element.firstFragment)?.node;
     if (declaration == null) {

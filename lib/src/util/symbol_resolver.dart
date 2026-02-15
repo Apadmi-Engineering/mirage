@@ -9,11 +9,11 @@ class SymbolResolver extends RecursiveAstVisitor {
 
   @override
   visitNamedType(NamedType node) {
-    final element = node.element2;
+    final element = node.element;
     if (element == null) {
       return;
     }
-    final (name, uri) = (element.name3, element.library2?.uri);
+    final (name, uri) = (element.name, element.library?.uri);
     if (name == null || uri == null || uri.scheme == _coreLibraryScheme) {
       return super.visitNamedType(node);
     }

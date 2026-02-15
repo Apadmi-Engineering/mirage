@@ -1,6 +1,6 @@
 import 'dart:core';
 
-import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:code_builder/code_builder.dart';
 import 'package:flumepod/src/util/method_builder_utils.dart';
@@ -12,7 +12,7 @@ import 'method_builder_utils_test.mocks.dart';
 
 @GenerateNiceMocks([
   MockSpec<DartType>(),
-  MockSpec<MethodElement2>(),
+  MockSpec<MethodElement>(),
   MockSpec<FormalParameterElement>(),
 ])
 void main() {
@@ -21,7 +21,7 @@ void main() {
       // Setup
       // Parameter
       final parameterFixture = MockFormalParameterElement();
-      when(parameterFixture.name3).thenReturn("p1");
+      when(parameterFixture.name).thenReturn("p1");
       when(parameterFixture.type).thenReturn(MockDartType());
       when(parameterFixture.isNamed).thenReturn(false);
       when(parameterFixture.isOptional).thenReturn(false);
@@ -29,13 +29,13 @@ void main() {
 
       // Optional parameter
       final optionalParameterFixture = MockFormalParameterElement();
-      when(optionalParameterFixture.name3).thenReturn("p2");
+      when(optionalParameterFixture.name).thenReturn("p2");
       when(optionalParameterFixture.type).thenReturn(MockDartType());
       when(optionalParameterFixture.isNamed).thenReturn(true);
       when(optionalParameterFixture.isOptional).thenReturn(true);
       when(optionalParameterFixture.isRequired).thenReturn(false);
 
-      final mockElement = MockMethodElement2();
+      final mockElement = MockMethodElement();
       when(mockElement.formalParameters)
           .thenReturn([parameterFixture, optionalParameterFixture]);
 

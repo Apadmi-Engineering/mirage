@@ -1,4 +1,4 @@
-import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:flumepod/src/import_finder.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
@@ -10,8 +10,8 @@ import 'import_finder_test.mocks.dart';
 
 @GenerateNiceMocks([
   MockSpec<LibraryReader>(),
-  MockSpec<Element2>(),
-  MockSpec<LibraryElement2>(),
+  MockSpec<Element>(),
+  MockSpec<LibraryElement>(),
 ])
 void main() {
   group("Import finder unit tests", () {
@@ -31,8 +31,8 @@ void main() {
     test("getImportUrl - with element - resolution exception - throws", () {
       // Setup
       final exceptionFixture = Exception();
-      final elementFixture = MockElement2()
-        ..stubReturn((it) => it.library2, MockLibraryElement2());
+      final elementFixture = MockElement()
+        ..stubReturn((it) => it.library, MockLibraryElement());
       when(mockLibraryReader.pathToElement(any)).thenThrow(exceptionFixture);
 
       // Run test
@@ -43,8 +43,8 @@ void main() {
       // Setup
       when(mockLibraryReader.pathToElement(any))
           .thenReturn(Uri.parse("dart:core"));
-      final elementFixture = MockElement2()
-        ..stubReturn((it) => it.library2, MockLibraryElement2());
+      final elementFixture = MockElement()
+        ..stubReturn((it) => it.library, MockLibraryElement());
 
       // Run test
       expect(sut.getImportUrl(elementFixture), "dart:core");
