@@ -34,15 +34,15 @@ class TypeReferencer {
     } else if (type is analyzer.InterfaceType) {
       return TypeReference(
         (builder) => builder
-          ..symbol = type.element3.name3
+          ..symbol = type.element.name
           ..isNullable = forceNullable || _typeSystem.isNullable(type)
-          ..url = _importFinder.getImportUrl(type.element3)
+          ..url = _importFinder.getImportUrl(type.element)
           ..types.addAll(type.typeArguments.map(obtainReferenceForType)),
       );
     }
     return refer(
       type.getDisplayString(),
-      _importFinder.getImportUrl(type.element3),
+      _importFinder.getImportUrl(type.element),
     );
   }
 }

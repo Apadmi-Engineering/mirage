@@ -1,4 +1,4 @@
-import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:code_builder/code_builder.dart';
 import 'package:flumepod/src/code_builders/fake_type_code_builder.dart';
 import 'package:flumepod/src/models/fake_type.dart';
@@ -20,17 +20,17 @@ class MethodCodeBuilder {
   );
 
   List<Method> generateMethods(
-    ClassElement2 classElement, {
+    ClassElement classElement, {
     bool seedValueProvided = true,
     // TODO(TomRHandcock) Remove this field when deemed no longer required.
     bool generateKeepAlive = false,
   }) {
-    final methodElements = classElement.methods2;
+    final methodElements = classElement.methods;
     final returnTypes =
         methodElements.map((method) => method.returnType).toSet();
     final fakedTypes = _fakeTypeGenerator.generateFakeTypes(returnTypes);
     return methodElements
-        .map((methodElement) => switch (methodElement.name3) {
+        .map((methodElement) => switch (methodElement.name) {
               "build" => generateBuildMethod(
                   methodElement, seedValueProvided, generateKeepAlive),
               _ => generateMethod(methodElement, fakedTypes),
@@ -40,7 +40,7 @@ class MethodCodeBuilder {
   }
 
   Method generateBuildMethod(
-    MethodElement2 method,
+    MethodElement method,
     bool seedValueProvided,
     bool generateKeepAlive,
   ) {
@@ -49,7 +49,7 @@ class MethodCodeBuilder {
     final isStream = method.returnType.isDartAsyncStream;
     final positionalArgs =
         method.formalParameters.where((p) => p.isPositional).toList();
-    final positionalArgsCode = positionalArgs.map((arg) => arg.name3).join(", ");
+    final positionalArgsCode = positionalArgs.map((arg) => arg.name).join(", ");
     return Method(
       (methodBuilder) {
         methodBuilder
@@ -90,13 +90,13 @@ class MethodCodeBuilder {
   }
 
   Method? generateMethod(
-    MethodElement2 method,
+    MethodElement method,
     Set<FakeType> fakeTypes,
   ) {
     if (!method.isPublic) {
       return null;
     }
-    final methodName = method.name3;
+    final methodName = method.name;
     if(methodName == null) {
       return null;
     }
@@ -105,7 +105,7 @@ class MethodCodeBuilder {
     final isStream = method.returnType.isDartAsyncStream;
     final positionalArgs =
         method.formalParameters.where((p) => p.isPositional).toList();
-    final positionalArgsCode = positionalArgs.map((arg) => arg.name3).join(", ");
+    final positionalArgsCode = positionalArgs.map((arg) => arg.name).join(", ");
     final returnType = method.returnType;
     final fakedReturnType = fakeTypes.cast<FakeType?>().firstWhere(
           (fakeType) => fakeType?.originalType == returnType,
@@ -119,7 +119,7 @@ class MethodCodeBuilder {
     return Method(
       (methodBuilder) {
         methodBuilder
-          ..name = method.name3
+          ..name = method.name
           ..body = Block((blockBuilder) {
             if (isStream) {
               blockBuilder.addStaticCode("yield* ");
@@ -127,7 +127,7 @@ class MethodCodeBuilder {
               blockBuilder.addStaticCode("return ");
             }
             blockBuilder.addStaticCode(
-              "noSuchMethod(Invocation.method(#${method.name3}, [$positionalArgsCode])",
+              "noSuchMethod(Invocation.method(#${method.name}, [$positionalArgsCode])",
             );
             if (stubValue != null) {
               blockBuilder.addStaticCode(", returnValueForMissingStub: ");

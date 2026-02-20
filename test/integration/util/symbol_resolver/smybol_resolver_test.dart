@@ -47,9 +47,9 @@ void main() {
       }, (resolver) async {
         // Setup
         final libraryElement = await resolver.libraryFor(AssetId("package", "provider.g.dart"));
-        final classElement = libraryElement.classes.firstWhere((it) => it.name3 == r"_$DummySource");
-        final methodElement = classElement.methods2.firstWhere((it) => it.name3 == "runBuild");
-        final resolvedLibrary = await libraryElement.session.getResolvedLibraryByElement2(libraryElement);
+        final classElement = libraryElement.classes.firstWhere((it) => it.name == r"_$DummySource");
+        final methodElement = classElement.methods.firstWhere((it) => it.name == "runBuild");
+        final resolvedLibrary = await libraryElement.session.getResolvedLibraryByElement(libraryElement);
         if(resolvedLibrary is! ResolvedLibraryResult) {
           fail("Failed to resolve library");
         }

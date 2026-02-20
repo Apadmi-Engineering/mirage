@@ -26,11 +26,10 @@ class MockTestNotifier extends _i1.$Notifier<String>
   @override
   runBuild() {
     {
-      final created = build(_$args);
       final ref = this.ref as _i5.$Ref<String, String>;
       final element = ref.element as _i5.$ClassProviderElement<
           _i5.AnyNotifier<String, String>, String, Object?, Object?>;
-      element.handleValue(ref, created);
+      element.handleCreate(ref, () => build(_$args));
     }
   }
 

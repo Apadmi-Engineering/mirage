@@ -1,4 +1,4 @@
-import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:flumepod/flumepod.dart';
 import 'package:flumepod/src/models/errors.dart';
@@ -9,7 +9,7 @@ class LibraryValidator {
   static const _annotationTypeChecker =
       TypeChecker.typeNamed(Flumepod, inPackage: "flumepod");
 
-  final LibraryElement2 library;
+  final LibraryElement library;
 
   const LibraryValidator(this.library);
 
@@ -29,11 +29,11 @@ class LibraryValidator {
       if (type == null) {
         throw Exception("Cannot parse type $type");
       }
-      final classElement = type.element3;
-      if (classElement is! ClassElement2) {
+      final classElement = type.element;
+      if (classElement is! ClassElement) {
         throw InvalidTypeMockedError(type);
       }
-      final ref = classElement.lookUpGetter2(name: "ref", library: library);
+      final ref = classElement.lookUpGetter(name: "ref", library: library);
       if (ref == null) {
         throw InvalidTypeMockedError(type);
       }
@@ -52,7 +52,7 @@ class LibraryValidator {
       return null;
     }
     return annotatedElements.cast<AnnotatedElement?>().firstWhere(
-          (element) => element?.element.id == library.entryPoint2?.id,
+          (element) => element?.element.id == library.entryPoint?.id,
           orElse: () => null,
         );
   }

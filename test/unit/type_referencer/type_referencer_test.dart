@@ -1,4 +1,4 @@
-import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart' as analyzer;
 import 'package:analyzer/dart/element/type_system.dart';
 import 'package:code_builder/code_builder.dart';
@@ -14,7 +14,7 @@ import 'type_referencer_test.mocks.dart';
 @GenerateNiceMocks([
   MockSpec<ImportFinder>(),
   MockSpec<TypeSystem>(),
-  MockSpec<InterfaceElement2>(),
+  MockSpec<InterfaceElement>(),
   MockSpec<analyzer.InterfaceType>(),
   MockSpec<analyzer.DartType>(),
   MockSpec<analyzer.VoidType>(),
@@ -54,7 +54,7 @@ Future<void> main() async {
       // Setup
       final fieldTypeFixture = MockDartType()
         ..stubReturn((it) => it.getDisplayString(), "String")
-        ..stubReturn((it) => it.element3, MockInterfaceElement2());
+        ..stubReturn((it) => it.element, MockInterfaceElement());
       final positionalFieldFixture = MockRecordTypePositionalField()
         ..stubReturn((it) => it.type, fieldTypeFixture);
       final namedFieldFixture = MockRecordTypeNamedField()
@@ -94,10 +94,10 @@ Future<void> main() async {
       // Setup
       when(mockImportFinder.getImportUrl(any))
           .thenReturn("package:consumer/consumer.dart");
-      final interfaceElementFixture = MockInterfaceElement2()
-        ..stubReturn((it) => it.name3, "MyClass");
+      final interfaceElementFixture = MockInterfaceElement()
+        ..stubReturn((it) => it.name, "MyClass");
       final dartTypeFixture = MockInterfaceType()
-        ..stubReturn((it) => it.element3, interfaceElementFixture);
+        ..stubReturn((it) => it.element, interfaceElementFixture);
 
       // Run test
       final result = sut.obtainReferenceForType(dartTypeFixture);
@@ -132,11 +132,11 @@ Future<void> main() async {
       when(mockImportFinder.getImportUrl(any))
           .thenReturn("package:consumer/consumer.dart");
       final parameterTypeFixture = MockVoidType();
-      final interfaceElementFixture = MockInterfaceElement2()
-        ..stubReturn((it) => it.name3, "MyClass")
-        ..stubReturn((it) => it.typeParameters2, parameterTypeFixture);
+      final interfaceElementFixture = MockInterfaceElement()
+        ..stubReturn((it) => it.name, "MyClass")
+        ..stubReturn((it) => it.typeParameters, parameterTypeFixture);
       final dartTypeFixture = MockInterfaceType()
-        ..stubReturn((it) => it.element3, interfaceElementFixture)
+        ..stubReturn((it) => it.element, interfaceElementFixture)
         ..stubReturn((it) => it.typeArguments, [parameterTypeFixture]);
 
       // Run test
