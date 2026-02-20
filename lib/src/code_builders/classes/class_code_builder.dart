@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:code_builder/code_builder.dart';
 import 'package:flumepod/src/models/errors.dart';
@@ -11,8 +11,8 @@ abstract class ClassCodeBuilderDelegate {
 }
 
 mixin ClassCodeBuilderUtils {
-  Element2 getElement(DartType type) {
-    final element = type.element3;
+  Element getElement(DartType type) {
+    final element = type.element;
     if (element == null) {
       throw ElementNotFoundError(type);
     }
@@ -21,26 +21,26 @@ mixin ClassCodeBuilderUtils {
 
   String getTypeName(DartType type) {
     final element = getElement(type);
-    final typeName = element.name3;
+    final typeName = element.name;
     if (typeName == null) {
       throw TypeNameNotFoundError(element, type);
     }
     return typeName;
   }
 
-  LibraryElement2 getLibraryForType(DartType type) {
+  LibraryElement getLibraryForType(DartType type) {
     final element = getElement(type);
-    final library = element.library2;
+    final library = element.library;
     if (library == null) {
       throw LibraryNotFoundError(type);
     }
     return library;
   }
 
-  ClassElement2 getClassForType(DartType type) {
+  ClassElement getClassForType(DartType type) {
     final library = getLibraryForType(type);
     final classElement =
-        LibraryReader(library).element.getClass2(getTypeName(type));
+        LibraryReader(library).element.getClass(getTypeName(type));
     if (classElement == null) {
       throw ClassNotFound(type);
     }

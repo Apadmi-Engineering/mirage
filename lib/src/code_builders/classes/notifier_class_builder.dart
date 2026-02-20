@@ -1,5 +1,5 @@
 import 'package:analyzer/dart/analysis/results.dart';
-import 'package:analyzer/dart/element/element2.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart' as analyzer;
 import 'package:code_builder/code_builder.dart';
 import 'package:flumepod/src/code_builders/classes/class_code_builder.dart';
@@ -40,15 +40,15 @@ class NotifierClassBuilder
     return fakedClasses + [notifier];
   }
 
-  Future<Class> _getNotifierClass(ClassElement2 element, Set<FakeType> fakeTypes) async {
-    final resolvedResult = await element.session?.getResolvedLibraryByElement2(element.library2);
+  Future<Class> _getNotifierClass(ClassElement element, Set<FakeType> fakeTypes) async {
+    final resolvedResult = await element.session?.getResolvedLibraryByElement(element.library);
     if(resolvedResult is! ResolvedLibraryResult) {
       throw StateError("Unable to resolve library for class");
     }
     final memberCopier = _getMemberCopier(resolvedResult);
     return Class((classBuilder) {
       final typeName = getTypeName(element.thisType);
-      final superType = element.supertype?.element3.supertype;
+      final superType = element.supertype?.element.supertype;
       if (superType == null) {
         throw ProviderSupertypeNotFound(element.thisType);
       }
@@ -67,14 +67,14 @@ class NotifierClassBuilder
         }
       }
 
-      for (final FieldElement2 field in element.supertype?.element3.fields2 ?? []) {
+      for (final FieldElement field in element.supertype?.element.fields ?? []) {
         final copiedField = memberCopier.copyField(field);
         if(copiedField != null) {
           classBuilder.fields.add(copiedField);
         }
       }
 
-      final runBuildMethod = element.supertype?.element3.methods2.where((method) => method.name3 == "runBuild").firstOrNull;
+      final runBuildMethod = element.supertype?.element.methods.where((method) => method.name == "runBuild").firstOrNull;
       if(runBuildMethod != null) {
         final copiedMethod = memberCopier.copyMethod(runBuildMethod, true);
         if(copiedMethod != null) {
@@ -115,8 +115,8 @@ class NotifierClassBuilder
     });
   }
 
-  Set<FakeType> _generateFakeTypes(ClassElement2 classElement) {
-    final publicMethods = classElement.methods2.where((method) => method.isPublic);
+  Set<FakeType> _generateFakeTypes(ClassElement classElement) {
+    final publicMethods = classElement.methods.where((method) => method.isPublic);
     final returnTypes = publicMethods.map((method) => method.returnType).toSet();
     return _fakeTypeCodeBuilder.generateFakeTypes(returnTypes);
   }
