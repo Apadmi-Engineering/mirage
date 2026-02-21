@@ -1,3 +1,8 @@
+## 1.0.0-dev.3
+
+* Updates `pubspec.yaml` for publishing to pub.dev.
+* Removes unwanted files from published package.
+
 ## 1.0.0-dev.2
 
 * Upgrades dependencies.
