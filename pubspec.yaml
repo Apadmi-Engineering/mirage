@@ -2,7 +2,7 @@ name: flumepod
 description: "A code generator to create Mockito compliant mocks of Riverpod Notifiers."
 repository: https://github.com/Apadmi-Engineering/mirage
 issue_tracker: https://github.com/Apadmi-Engineering/mirage/issues
-version: 1.0.0-dev.3
+version: 1.0.0
 topics:
   - riverpod
   - testing

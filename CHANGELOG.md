@@ -1,3 +1,8 @@
+## 1.0.0
+
+* Fixes an issue where notifier class family argument symbols weren't being resolved and prefixed with imports ([#21](https://github.com/Apadmi-Engineering/mirage/issues/21)).
+* Relaxes Dart SDK version constraint to `^3.9.0`.
+
 ## 1.0.0-dev.3
 
 * Updates `pubspec.yaml` for publishing to pub.dev.
