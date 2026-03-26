@@ -20,7 +20,7 @@ class MemberCopierImpl implements MemberCopier {
 
   @override
   Method? copyGetter(GetterElement element) =>
-      copyGetterImplementation(element)?.let((implementation) {
+      copyGetterImplementation(element, library)?.let((implementation) {
         return Method((mb) => mb
           ..name = element.name
           ..type = MethodType.getter
@@ -30,7 +30,7 @@ class MemberCopierImpl implements MemberCopier {
 
   @override
   Field? copyField(FieldElement element) =>
-      copyFieldImplementation(element)?.let((implementation) {
+      copyFieldImplementation(element, library)?.let((implementation) {
         return Field((fb) => fb
           ..name = element.name
           ..late = element.isLate
@@ -49,9 +49,9 @@ class MemberCopierImpl implements MemberCopier {
               .addAll([if (isOverride) CodeExpression(Code("override"))]));
       });
 
-  Code? copyGetterImplementation(TypeParameterizedElement element) {
+  Code? copyGetterImplementation(TypeParameterizedElement element, ResolvedLibraryResult resolvedLibrary) {
     final declaration =
-        library.getFragmentDeclaration(element.firstFragment)?.node;
+        resolvedLibrary.getFragmentDeclaration(element.firstFragment)?.node;
     if (declaration == null) {
       // Fields early exit here
       return null;
@@ -73,14 +73,9 @@ class MemberCopierImpl implements MemberCopier {
     return bodySource;
   }
 
-  Code? copyFieldImplementation(FieldElement element) {
-    final library =
-        element.session?.getParsedLibraryByElement(element.library);
-    if (library is! ParsedLibraryResult) {
-      return null;
-    }
+  Code? copyFieldImplementation(FieldElement element, ResolvedLibraryResult resolvedLibrary) {
     final declaration =
-        library.getFragmentDeclaration(element.firstFragment)?.node;
+        resolvedLibrary.getFragmentDeclaration(element.firstFragment)?.node;
     if (declaration == null) {
       return null;
     }
@@ -88,10 +83,20 @@ class MemberCopierImpl implements MemberCopier {
       return null;
     }
     final rawBody = declaration.initializer;
+    if(rawBody == null) {
+      return Code("");
+    }
+    final allocator = SymbolResolver();
+    declaration.accept(allocator);
+    final references = allocator.consumeReferences();
     return Code.scope((allocate) {
+      String bodySource = rawBody.toSource();
       allocate(
           refer("Ref", "package:riverpod_annotation/riverpod_annotation.dart"));
-      return rawBody?.toSource() ?? "";
+      for (final reference in references) {
+        bodySource = bodySource.replaceAll(reference.symbol ?? "", allocate(reference));
+      }
+      return bodySource;
     });
   }
 
