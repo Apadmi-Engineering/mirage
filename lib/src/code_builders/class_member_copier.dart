@@ -21,37 +21,49 @@ class MemberCopierImpl implements MemberCopier {
   @override
   Method? copyGetter(GetterElement element) =>
       copyGetterImplementation(element, library)?.let((implementation) {
-        return Method((mb) => mb
-          ..name = element.name
-          ..type = MethodType.getter
-          ..lambda = true
-          ..body = implementation);
+        return Method(
+          (mb) => mb
+            ..name = element.name
+            ..type = MethodType.getter
+            ..lambda = true
+            ..body = implementation,
+        );
       });
 
   @override
   Field? copyField(FieldElement element) =>
       copyFieldImplementation(element, library)?.let((implementation) {
-        return Field((fb) => fb
-          ..name = element.name
-          ..late = element.isLate
-          ..modifier =
-              element.isFinal ? FieldModifier.final$ : FieldModifier.var$
-          ..assignment = implementation);
+        return Field(
+          (fb) => fb
+            ..name = element.name
+            ..late = element.isLate
+            ..modifier = element.isFinal
+                ? FieldModifier.final$
+                : FieldModifier.var$
+            ..assignment = implementation,
+        );
       });
 
   @override
   Method? copyMethod(MethodElement element, bool isOverride) =>
       copyMethodImplementation(element, library)?.let((implementation) {
-        return Method((mb) => mb
-          ..name = element.name
-          ..body = implementation
-          ..annotations
-              .addAll([if (isOverride) CodeExpression(Code("override"))]));
+        return Method(
+          (mb) => mb
+            ..name = element.name
+            ..body = implementation
+            ..annotations.addAll([
+              if (isOverride) CodeExpression(Code("override")),
+            ]),
+        );
       });
 
-  Code? copyGetterImplementation(TypeParameterizedElement element, ResolvedLibraryResult resolvedLibrary) {
-    final declaration =
-        resolvedLibrary.getFragmentDeclaration(element.firstFragment)?.node;
+  Code? copyGetterImplementation(
+    TypeParameterizedElement element,
+    ResolvedLibraryResult resolvedLibrary,
+  ) {
+    final declaration = resolvedLibrary
+        .getFragmentDeclaration(element.firstFragment)
+        ?.node;
     if (declaration == null) {
       // Fields early exit here
       return null;
@@ -61,21 +73,25 @@ class MemberCopierImpl implements MemberCopier {
     }
     final rawBody = declaration.body;
     final bodySource = switch (rawBody) {
-      ExpressionFunctionBody(:final expression) =>
-        CodeExpression(Code(expression.toSource())).code,
-      BlockFunctionBody(:final block) => Code(block.statements
-              .whereType<ReturnStatement>()
-              .firstOrNull
-              ?.toSource() ??
-          "// Found nothing"),
+      ExpressionFunctionBody(:final expression) => CodeExpression(
+        Code(expression.toSource()),
+      ).code,
+      BlockFunctionBody(:final block) => Code(
+        block.statements.whereType<ReturnStatement>().firstOrNull?.toSource() ??
+            "// Found nothing",
+      ),
       _ => Code(rawBody.toSource()),
     };
     return bodySource;
   }
 
-  Code? copyFieldImplementation(FieldElement element, ResolvedLibraryResult resolvedLibrary) {
-    final declaration =
-        resolvedLibrary.getFragmentDeclaration(element.firstFragment)?.node;
+  Code? copyFieldImplementation(
+    FieldElement element,
+    ResolvedLibraryResult resolvedLibrary,
+  ) {
+    final declaration = resolvedLibrary
+        .getFragmentDeclaration(element.firstFragment)
+        ?.node;
     if (declaration == null) {
       return null;
     }
@@ -83,7 +99,7 @@ class MemberCopierImpl implements MemberCopier {
       return null;
     }
     final rawBody = declaration.initializer;
-    if(rawBody == null) {
+    if (rawBody == null) {
       return Code("");
     }
     final allocator = SymbolResolver();
@@ -92,17 +108,25 @@ class MemberCopierImpl implements MemberCopier {
     return Code.scope((allocate) {
       String bodySource = rawBody.toSource();
       allocate(
-          refer("Ref", "package:riverpod_annotation/riverpod_annotation.dart"));
+        refer("Ref", "package:riverpod_annotation/riverpod_annotation.dart"),
+      );
       for (final reference in references) {
-        bodySource = bodySource.replaceAll(reference.symbol ?? "", allocate(reference));
+        bodySource = bodySource.replaceAll(
+          reference.symbol ?? "",
+          allocate(reference),
+        );
       }
       return bodySource;
     });
   }
 
-  Code? copyMethodImplementation(MethodElement element, ResolvedLibraryResult resolvedLibrary) {
-    final declaration =
-        resolvedLibrary.getFragmentDeclaration(element.firstFragment)?.node;
+  Code? copyMethodImplementation(
+    MethodElement element,
+    ResolvedLibraryResult resolvedLibrary,
+  ) {
+    final declaration = resolvedLibrary
+        .getFragmentDeclaration(element.firstFragment)
+        ?.node;
     if (declaration == null) {
       return null;
     }
@@ -116,7 +140,10 @@ class MemberCopierImpl implements MemberCopier {
     return Code.scope((allocate) {
       String bodySource = body.toSource();
       for (final reference in references) {
-        bodySource = bodySource.replaceAll(reference.symbol ?? "", allocate(reference));
+        bodySource = bodySource.replaceAll(
+          reference.symbol ?? "",
+          allocate(reference),
+        );
       }
       return bodySource;
     });
