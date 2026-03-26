@@ -10,8 +10,9 @@ void testGoldenBuilder(
   String description,
   String inputPath,
   String generatedPartPath,
-  String expectedPath,
-) =>
+  String expectedPath, {
+  Map<String, String>? additionalSources,
+}) =>
     test(
       description,
       () async {
@@ -26,6 +27,7 @@ void testGoldenBuilder(
             "flumepod|test/input.dart": inputSource,
             "flumepod|test/input.g.dart": generatedSource,
             "flumepod|test/input.flumepod.dart": expectedSource,
+            ...?additionalSources,
           },
           generateFor: {"flumepod|test/input.dart"},
           outputs: {

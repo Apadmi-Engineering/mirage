@@ -1,5 +1,6 @@
 import 'package:flumepod/flumepod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import './model.dart';
 
 part 'input.g.dart';
 
@@ -9,7 +10,7 @@ void main() {}
 @Riverpod(keepAlive: true)
 class TestNotifier extends _$TestNotifier {
   @override
-  String build(String param) {
+  String build(Model param) {
     return "Dummy string";
   }
 
