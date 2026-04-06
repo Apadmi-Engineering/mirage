@@ -38,6 +38,8 @@ class MockTestNotifier extends _i1.$AsyncNotifier<String>
 
   @override
   _i5.FutureOr<String> build(String? param) async {
+    // keepAlive() used so mock instance with stubbed/real calls isn't disposed.
+    ref.keepAlive();
     return noSuchMethod(Invocation.method(#build, [param]),
         returnValueForMissingStub: seedBuilder());
   }

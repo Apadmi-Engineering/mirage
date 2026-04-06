@@ -37,6 +37,8 @@ class MockTestNotifier extends _i1.$Notifier<String>
 
   @override
   String build(_i7.Model? param) {
+    // keepAlive() used so mock instance with stubbed/real calls isn't disposed.
+    ref.keepAlive();
     return noSuchMethod(Invocation.method(#build, [param]),
         returnValueForMissingStub: seedBuilder());
   }

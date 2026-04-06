@@ -30,7 +30,7 @@ void main() {
     });
 
     test(
-        "generateBuildMethod - async, no seed, no keep alive - returns expected method",
+        "generateBuildMethod - async, no seed - returns expected method",
         () {
       // Setup
       final parameterTypeFixture = MockDartType();
@@ -55,7 +55,7 @@ void main() {
 
       // Run test
       final result =
-          sut.generateBuildMethod(methodElementFixture, false, false);
+          sut.generateBuildMethod(methodElementFixture, false);
 
       // Verify
       expect(
@@ -102,7 +102,7 @@ void main() {
     });
 
     test(
-        "generateBuildMethod - async, seeded, keep alive - returns expected method",
+        "generateBuildMethod - async, seeded - returns expected method",
         () {
       // Setup
       final parameterTypeFixture = MockDartType();
@@ -126,7 +126,7 @@ void main() {
           .thenReturn(const Reference("Future<String>"));
 
       // Run test
-      final result = sut.generateBuildMethod(methodElementFixture, true, true);
+      final result = sut.generateBuildMethod(methodElementFixture, true);
 
       // Verify
       expect(
@@ -183,7 +183,7 @@ void main() {
     });
 
     test(
-        "generateBuildMethod - sync, no seed, no keep alive - returns expected method",
+        "generateBuildMethod - sync, no seed - returns expected method",
         () {
       // Setup
       final returnTypeFixture = MockDartType();
@@ -195,7 +195,7 @@ void main() {
 
       // Run test
       final result =
-          sut.generateBuildMethod(methodElementFixture, false, false);
+          sut.generateBuildMethod(methodElementFixture, false);
 
       // Verify
       expect(
@@ -225,7 +225,7 @@ void main() {
     });
 
     test(
-        "generateBuildMethod - stream, no seed, no keep alive - returns expected method",
+        "generateBuildMethod - stream, no seed - returns expected method",
         () {
       // Setup
       final returnTypeFixture = MockDartType();
@@ -238,7 +238,7 @@ void main() {
 
       // Run test
       final result =
-          sut.generateBuildMethod(methodElementFixture, false, false);
+          sut.generateBuildMethod(methodElementFixture, false);
 
       // Verify
       expect(
