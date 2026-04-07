@@ -22,8 +22,6 @@ class MethodCodeBuilder {
   List<Method> generateMethods(
     ClassElement classElement, {
     bool seedValueProvided = true,
-    // TODO(TomRHandcock) Remove this field when deemed no longer required.
-    bool generateKeepAlive = false,
   }) {
     final methodElements = classElement.methods;
     final returnTypes =
@@ -32,7 +30,7 @@ class MethodCodeBuilder {
     return methodElements
         .map((methodElement) => switch (methodElement.name) {
               "build" => generateBuildMethod(
-                  methodElement, seedValueProvided, generateKeepAlive),
+                  methodElement, seedValueProvided),
               _ => generateMethod(methodElement, fakedTypes),
             })
         .whereType<Method>()
@@ -42,7 +40,6 @@ class MethodCodeBuilder {
   Method generateBuildMethod(
     MethodElement method,
     bool seedValueProvided,
-    bool generateKeepAlive,
   ) {
     final isFuture = method.returnType.isDartAsyncFuture ||
         method.returnType.isDartAsyncFutureOr;
@@ -55,9 +52,7 @@ class MethodCodeBuilder {
         methodBuilder
           ..name = "build"
           ..body = Block((blockBuilder) {
-            if (generateKeepAlive) {
-              blockBuilder.addStaticCode(_keepAliveInsert);
-            }
+            blockBuilder.addStaticCode(_keepAliveInsert);
             if (isStream) {
               blockBuilder.addStaticCode("yield* ");
             } else {
