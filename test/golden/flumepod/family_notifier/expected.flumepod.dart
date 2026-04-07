@@ -7,9 +7,11 @@ import 'package:riverpod/src/providers/notifier.dart' as _i1;
 import 'package:mockito/mockito.dart' as _i2;
 import 'input.dart' as _i3;
 import 'package:riverpod_annotation/riverpod_annotation.dart' as _i4;
-import 'package:riverpod/src/framework.dart' as _i5;
-import 'package:mockito/src/dummies.dart' as _i6;
-import 'dart:async' as _i7;
+import 'asset:flumepod/test/model.dart' as _i5;
+import 'package:riverpod/src/framework.dart' as _i6;
+import 'model.dart' as _i7;
+import 'package:mockito/src/dummies.dart' as _i8;
+import 'dart:async' as _i9;
 
 // Flumepod generated mock of class [TestNotifier].
 class MockTestNotifier extends _i1.$Notifier<String>
@@ -17,7 +19,7 @@ class MockTestNotifier extends _i1.$Notifier<String>
     implements _i3.TestNotifier {
   MockTestNotifier(this.seedBuilder);
 
-  late final _$args = ref.$arg as String;
+  late final _$args = ref.$arg as _i5.Model;
 
   String Function() seedBuilder;
 
@@ -26,15 +28,17 @@ class MockTestNotifier extends _i1.$Notifier<String>
   @override
   runBuild() {
     {
-      final ref = this.ref as _i5.$Ref<String, String>;
-      final element = ref.element as _i5.$ClassProviderElement<
-          _i5.AnyNotifier<String, String>, String, Object?, Object?>;
+      final ref = this.ref as _i6.$Ref<String, String>;
+      final element = ref.element as _i6.$ClassProviderElement<
+          _i6.AnyNotifier<String, String>, String, Object?, Object?>;
       element.handleCreate(ref, () => build(_$args));
     }
   }
 
   @override
-  String build(String? param) {
+  String build(_i7.Model? param) {
+    // keepAlive() used so mock instance with stubbed/real calls isn't disposed.
+    ref.keepAlive();
     return noSuchMethod(Invocation.method(#build, [param]),
         returnValueForMissingStub: seedBuilder());
   }
@@ -44,20 +48,20 @@ class MockTestNotifier extends _i1.$Notifier<String>
     return noSuchMethod(
       Invocation.method(#someMethod, []),
       returnValueForMissingStub:
-          _i6.dummyValue<String>(this, Invocation.method(#someMethod, [])),
+          _i8.dummyValue<String>(this, Invocation.method(#someMethod, [])),
       returnValue:
-          _i6.dummyValue<String>(this, Invocation.method(#someMethod, [])),
+          _i8.dummyValue<String>(this, Invocation.method(#someMethod, [])),
     );
   }
 
   @override
-  _i7.Future<int> someAsyncMethod() async {
+  _i9.Future<int> someAsyncMethod() async {
     return noSuchMethod(
       Invocation.method(#someAsyncMethod, []),
       returnValueForMissingStub:
-          _i6.dummyValue<int>(this, Invocation.method(#someAsyncMethod, [])),
+          _i8.dummyValue<int>(this, Invocation.method(#someAsyncMethod, [])),
       returnValue:
-          _i6.dummyValue<int>(this, Invocation.method(#someAsyncMethod, [])),
+          _i8.dummyValue<int>(this, Invocation.method(#someAsyncMethod, [])),
     );
   }
 
@@ -69,7 +73,7 @@ class MockTestNotifier extends _i1.$Notifier<String>
   }
 
   @override
-  _i7.Future<void> asyncSideEffect() async {
+  _i9.Future<void> asyncSideEffect() async {
     return noSuchMethod(
       Invocation.method(#asyncSideEffect, []),
     );
