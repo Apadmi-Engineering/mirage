@@ -116,7 +116,7 @@ class FakeTypeCodeBuilder {
         .toList();
   }
 
-  Code? getStubValue(
+  Code? getMethodStubValue(
     FakeType fakeType,
     String methodName,
     String positionalArgs,
@@ -125,7 +125,7 @@ class FakeTypeCodeBuilder {
     if (element == null) {
       return null;
     } else if (element case InterfaceElement(isFutureOrStream: true)) {
-      return getStubValue(
+      return getMethodStubValue(
           fakeType.parameterTypes!.first, methodName, positionalArgs);
     } else {
       return Code.scope((allocate) {
@@ -134,6 +134,25 @@ class FakeTypeCodeBuilder {
         final typeParam = _allocateType(fakeType, allocate);
         final positionalParams =
             "this, Invocation.method(#$methodName, [$positionalArgs])";
+        return "$dummyInvocation<$typeParam>($positionalParams)";
+      });
+    }
+  }
+
+  Code? getGetterStubValue(
+    FakeType fakeType,
+    String methodName,
+  ) {
+    final element = fakeType.element;
+    if (element == null) {
+      return null;
+    } else {
+      return Code.scope((allocate) {
+        final dummyInvocation =
+            allocate(refer("dummyValue", "package:mockito/src/dummies.dart"));
+        final typeParam = _allocateType(fakeType, allocate);
+        final positionalParams =
+            "this, Invocation.getter(#$methodName)";
         return "$dummyInvocation<$typeParam>($positionalParams)";
       });
     }

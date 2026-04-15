@@ -15,13 +15,15 @@ void main() async {
         () => MockDummySource(() async => 36),
       )
     ]);
+    final mockDummySource = container.read(dummySourceProvider(6).notifier) as MockDummySource;
+    when(mockDummySource.dummy).thenReturn("Hello!");
 
     // Run test
     final result = await container.read(dummyProvider(6).future);
 
     // Verify
     expect(result, 36);
-    final mockDummySource = container.read(dummySourceProvider(6).notifier) as MockDummySource;
     verify(mockDummySource.someSideEffect()).called(1);
+    expect(mockDummySource.dummy, "Hello!");
   });
 }

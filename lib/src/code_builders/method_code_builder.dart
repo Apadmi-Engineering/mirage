@@ -14,137 +14,174 @@ class MethodCodeBuilder {
   final FakeTypeCodeBuilder _fakeTypeGenerator;
   final TypeReferencer _typeReferencer;
 
-  const MethodCodeBuilder(
-    this._fakeTypeGenerator,
-    this._typeReferencer,
-  );
+  const MethodCodeBuilder(this._fakeTypeGenerator, this._typeReferencer);
 
-  List<Method> generateMethods(
-    ClassElement classElement, {
+  List<Method> generateMethods(ClassElement classElement, {
     bool seedValueProvided = true,
   }) {
     final methodElements = classElement.methods;
-    final returnTypes =
-        methodElements.map((method) => method.returnType).toSet();
+    final getterElements = classElement.getters;
+    final returnTypes = <ExecutableElement>[...methodElements, ...getterElements]
+        .map((method) => method.returnType)
+        .toSet();
     final fakedTypes = _fakeTypeGenerator.generateFakeTypes(returnTypes);
-    return methodElements
-        .map((methodElement) => switch (methodElement.name) {
-              "build" => generateBuildMethod(
-                  methodElement, seedValueProvided),
-              _ => generateMethod(methodElement, fakedTypes),
-            })
+    final methods = methodElements
+        .map(
+          (methodElement) =>
+      switch (methodElement.name) {
+        "build" => generateBuildMethod(methodElement, seedValueProvided),
+        _ => generateMethod(methodElement, fakedTypes),
+      },
+    )
         .whereType<Method>()
         .toList();
+    final propertyAccessors = getterElements.map(
+            (getter) => generateGetter(getter, fakedTypes)
+    ).whereType<Method>().toList();
+    return propertyAccessors + methods;
   }
 
-  Method generateBuildMethod(
-    MethodElement method,
-    bool seedValueProvided,
-  ) {
-    final isFuture = method.returnType.isDartAsyncFuture ||
+  Method? generateGetter(PropertyAccessorElement propertyAccessor,
+      Set<FakeType> fakeTypes) {
+    final localName = propertyAccessor.name;
+    if (localName == null) {
+      return null;
+    }
+    final returnType = propertyAccessor.returnType;
+    final fakedReturnType = fakeTypes.cast<FakeType?>().firstWhere(
+          (fakeType) => fakeType?.originalType == returnType,
+      orElse: () => null,
+    );
+    final stubValue = switch(fakedReturnType) {
+      null => null,
+      _ => _fakeTypeGenerator.getGetterStubValue(fakedReturnType, localName),
+    };
+    return Method((methodBuilder) {
+      methodBuilder
+        ..name = localName
+        ..type = MethodType.getter
+        ..returns = _typeReferencer.obtainReferenceForType(
+            propertyAccessor.returnType)
+        ..body = Block((blockBuilder) {
+          blockBuilder.addStaticCode(
+              "return noSuchMethod(Invocation.getter(#$localName)");
+          if (stubValue != null) {
+            blockBuilder
+              ..addStaticCode(", returnValueForMissingStub: ")
+              ..addCode(stubValue)
+              ..addStaticCode(", returnValue: ")
+              ..addCode(stubValue);
+          }
+          blockBuilder.addStaticCode(",);");
+        });
+    });
+  }
+
+  Method generateBuildMethod(MethodElement method, bool seedValueProvided) {
+    final isFuture =
+        method.returnType.isDartAsyncFuture ||
         method.returnType.isDartAsyncFutureOr;
     final isStream = method.returnType.isDartAsyncStream;
-    final positionalArgs =
-        method.formalParameters.where((p) => p.isPositional).toList();
+    final positionalArgs = method.formalParameters
+        .where((p) => p.isPositional)
+        .toList();
     final positionalArgsCode = positionalArgs.map((arg) => arg.name).join(", ");
-    return Method(
-      (methodBuilder) {
-        methodBuilder
-          ..name = "build"
-          ..body = Block((blockBuilder) {
-            blockBuilder.addStaticCode(_keepAliveInsert);
-            if (isStream) {
-              blockBuilder.addStaticCode("yield* ");
-            } else {
-              blockBuilder.addStaticCode("return ");
-            }
+    return Method((methodBuilder) {
+      methodBuilder
+        ..name = "build"
+        ..body = Block((blockBuilder) {
+          blockBuilder.addStaticCode(_keepAliveInsert);
+          if (isStream) {
+            blockBuilder.addStaticCode("yield* ");
+          } else {
+            blockBuilder.addStaticCode("return ");
+          }
+          blockBuilder.addStaticCode(
+            "noSuchMethod(Invocation.method(#build, [$positionalArgsCode])",
+          );
+          if (seedValueProvided) {
             blockBuilder.addStaticCode(
-              "noSuchMethod(Invocation.method(#build, [$positionalArgsCode])",
+              ", returnValueForMissingStub: seedBuilder()",
             );
-            if (seedValueProvided) {
-              blockBuilder.addStaticCode(
-                ", returnValueForMissingStub: seedBuilder()",
-              );
-            }
-            blockBuilder.addStaticCode(");");
-          })
-          ..copyParameters(
-            method: method,
-            obtainReferenceForType: (type) =>
-                _typeReferencer.obtainReferenceForType(type, true),
-          )
-          ..annotations.add(const CodeExpression(Code("override")))
-          ..returns = _typeReferencer.obtainReferenceForType(method.returnType);
-        if (isFuture) {
-          methodBuilder.modifier = MethodModifier.async;
-        } else if (isStream) {
-          methodBuilder.modifier = MethodModifier.asyncStar;
-        }
-      },
-    );
+          }
+          blockBuilder.addStaticCode(");");
+        })
+        ..copyParameters(
+          method: method,
+          obtainReferenceForType: (type) =>
+              _typeReferencer.obtainReferenceForType(type, true),
+        )
+        ..annotations.add(const CodeExpression(Code("override")))
+        ..returns = _typeReferencer.obtainReferenceForType(method.returnType);
+      if (isFuture) {
+        methodBuilder.modifier = MethodModifier.async;
+      } else if (isStream) {
+        methodBuilder.modifier = MethodModifier.asyncStar;
+      }
+    });
   }
 
-  Method? generateMethod(
-    MethodElement method,
-    Set<FakeType> fakeTypes,
-  ) {
+  Method? generateMethod(MethodElement method, Set<FakeType> fakeTypes) {
     if (!method.isPublic) {
       return null;
     }
     final methodName = method.name;
-    if(methodName == null) {
+    if (methodName == null) {
       return null;
     }
-    final isFuture = method.returnType.isDartAsyncFuture ||
+    final isFuture =
+        method.returnType.isDartAsyncFuture ||
         method.returnType.isDartAsyncFutureOr;
     final isStream = method.returnType.isDartAsyncStream;
-    final positionalArgs =
-        method.formalParameters.where((p) => p.isPositional).toList();
+    final positionalArgs = method.formalParameters
+        .where((p) => p.isPositional)
+        .toList();
     final positionalArgsCode = positionalArgs.map((arg) => arg.name).join(", ");
     final returnType = method.returnType;
     final fakedReturnType = fakeTypes.cast<FakeType?>().firstWhere(
-          (fakeType) => fakeType?.originalType == returnType,
-          orElse: () => null,
-        );
+      (fakeType) => fakeType?.originalType == returnType,
+      orElse: () => null,
+    );
 
     final stubValue = fakedReturnType != null
-        ? _fakeTypeGenerator.getStubValue(
-            fakedReturnType, methodName, positionalArgsCode)
-        : null;
-    return Method(
-      (methodBuilder) {
-        methodBuilder
-          ..name = method.name
-          ..body = Block((blockBuilder) {
-            if (isStream) {
-              blockBuilder.addStaticCode("yield* ");
-            } else {
-              blockBuilder.addStaticCode("return ");
-            }
-            blockBuilder.addStaticCode(
-              "noSuchMethod(Invocation.method(#${method.name}, [$positionalArgsCode])",
-            );
-            if (stubValue != null) {
-              blockBuilder.addStaticCode(", returnValueForMissingStub: ");
-              blockBuilder.addCode(stubValue);
-              blockBuilder.addStaticCode(", returnValue: ");
-              blockBuilder.addCode(stubValue);
-            }
-            blockBuilder.addStaticCode(",);");
-          })
-          ..copyParameters(
-            method: method,
-            obtainReferenceForType: (type) =>
-                _typeReferencer.obtainReferenceForType(type, true),
+        ? _fakeTypeGenerator.getMethodStubValue(
+            fakedReturnType,
+            methodName,
+            positionalArgsCode,
           )
-          ..annotations.add(const CodeExpression(Code("override")))
-          ..returns = _typeReferencer.obtainReferenceForType(method.returnType);
-        if (isFuture) {
-          methodBuilder.modifier = MethodModifier.async;
-        } else if (isStream) {
-          methodBuilder.modifier = MethodModifier.asyncStar;
-        }
-      },
-    );
+        : null;
+    return Method((methodBuilder) {
+      methodBuilder
+        ..name = method.name
+        ..body = Block((blockBuilder) {
+          if (isStream) {
+            blockBuilder.addStaticCode("yield* ");
+          } else {
+            blockBuilder.addStaticCode("return ");
+          }
+          blockBuilder.addStaticCode(
+            "noSuchMethod(Invocation.method(#${method.name}, [$positionalArgsCode])",
+          );
+          if (stubValue != null) {
+            blockBuilder.addStaticCode(", returnValueForMissingStub: ");
+            blockBuilder.addCode(stubValue);
+            blockBuilder.addStaticCode(", returnValue: ");
+            blockBuilder.addCode(stubValue);
+          }
+          blockBuilder.addStaticCode(",);");
+        })
+        ..copyParameters(
+          method: method,
+          obtainReferenceForType: (type) =>
+              _typeReferencer.obtainReferenceForType(type, true),
+        )
+        ..annotations.add(const CodeExpression(Code("override")))
+        ..returns = _typeReferencer.obtainReferenceForType(method.returnType);
+      if (isFuture) {
+        methodBuilder.modifier = MethodModifier.async;
+      } else if (isStream) {
+        methodBuilder.modifier = MethodModifier.asyncStar;
+      }
+    });
   }
 }
