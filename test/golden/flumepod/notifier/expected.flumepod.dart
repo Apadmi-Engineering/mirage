@@ -29,6 +29,16 @@ class MockTestNotifier extends _i1.$Notifier<String>
   }
 
   @override
+  String get getter {
+    return noSuchMethod(
+      Invocation.getter(#getter),
+      returnValueForMissingStub:
+          _i5.dummyValue<String>(this, Invocation.getter(#getter)),
+      returnValue: _i5.dummyValue<String>(this, Invocation.getter(#getter)),
+    );
+  }
+
+  @override
   String build() {
     // keepAlive() used so mock instance with stubbed/real calls isn't disposed.
     ref.keepAlive();

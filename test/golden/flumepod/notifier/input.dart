@@ -32,4 +32,6 @@ class TestNotifier extends _$TestNotifier {
   Future<void> asyncSideEffect() async {
     return;
   }
+
+  String get getter => "value";
 }
