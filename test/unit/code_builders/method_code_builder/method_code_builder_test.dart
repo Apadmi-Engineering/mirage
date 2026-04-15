@@ -16,6 +16,7 @@ import 'method_code_builder_test.mocks.dart';
   MockSpec<TypeReferencer>(),
   MockSpec<MethodElement>(),
   MockSpec<FormalParameterElement>(),
+  MockSpec<GetterElement>()
 ])
 void main() {
   group("Method code builder unit tests", () {
@@ -426,6 +427,30 @@ void main() {
           "override",
         ),
       );
+    });
+
+    test("generateGetter - generates expected method", () {
+      // Setup
+      final returnTypeFixture = MockDartType();
+      final getterElementFixture = MockGetterElement();
+      when(getterElementFixture.isPublic).thenReturn(true);
+      when(getterElementFixture.returnType).thenReturn(returnTypeFixture);
+      when(getterElementFixture.name).thenReturn("getter");
+      when(mockTypeReferencer.obtainReferenceForType(any, any)).thenReturn(
+        const Reference("String", "dart:core"),
+      );
+
+      // Run test
+      final result = sut.generateGetter(getterElementFixture, {});
+
+      // Verify
+      expect(result,
+        isA<Method>()
+            .having((it) => it.name, "expected name", "getter",)
+            .having((it) =>
+        it.returns?.symbol, "expected return type", "String",)
+            .having((it) => it.annotations.first.code.toString(),
+          "expected override annotation", "override",),);
     });
   });
 }

@@ -62,6 +62,7 @@ class MethodCodeBuilder {
         ..type = MethodType.getter
         ..returns = _typeReferencer.obtainReferenceForType(
             propertyAccessor.returnType)
+        ..annotations.add(const CodeExpression(Code("override")))
         ..body = Block((blockBuilder) {
           blockBuilder.addStaticCode(
               "return noSuchMethod(Invocation.getter(#$localName)");
