@@ -16,43 +16,47 @@ class MethodCodeBuilder {
 
   const MethodCodeBuilder(this._fakeTypeGenerator, this._typeReferencer);
 
-  List<Method> generateMethods(ClassElement classElement, {
+  List<Method> generateMethods(
+    ClassElement classElement, {
     bool seedValueProvided = true,
   }) {
     final methodElements = classElement.methods;
     final getterElements = classElement.getters;
-    final returnTypes = <ExecutableElement>[...methodElements, ...getterElements]
-        .map((method) => method.returnType)
-        .toSet();
+    final returnTypes = <ExecutableElement>[
+      ...methodElements,
+      ...getterElements,
+    ].map((method) => method.returnType).toSet();
     final fakedTypes = _fakeTypeGenerator.generateFakeTypes(returnTypes);
     final methods = methodElements
         .map(
-          (methodElement) =>
-      switch (methodElement.name) {
-        "build" => generateBuildMethod(methodElement, seedValueProvided),
-        _ => generateMethod(methodElement, fakedTypes),
-      },
-    )
+          (methodElement) => switch (methodElement.name) {
+            "build" => generateBuildMethod(methodElement, seedValueProvided),
+            _ => generateMethod(methodElement, fakedTypes),
+          },
+        )
         .whereType<Method>()
         .toList();
-    final propertyAccessors = getterElements.map(
-            (getter) => generateGetter(getter, fakedTypes)
-    ).whereType<Method>().toList();
+    final propertyAccessors = getterElements
+        .map((getter) => generateGetter(getter, fakedTypes))
+        .whereType<Method>()
+        .toList();
     return propertyAccessors + methods;
   }
 
-  Method? generateGetter(PropertyAccessorElement propertyAccessor,
-      Set<FakeType> fakeTypes) {
+  Method? generateGetter(
+    PropertyAccessorElement propertyAccessor,
+    Set<FakeType> fakeTypes,
+  ) {
     final localName = propertyAccessor.name;
     if (localName == null) {
       return null;
     }
     final returnType = propertyAccessor.returnType;
     final fakedReturnType = fakeTypes.cast<FakeType?>().firstWhere(
-          (fakeType) => fakeType?.originalType == returnType,
+      (fakeType) => fakeType?.originalType == returnType,
       orElse: () => null,
     );
-    final stubValue = switch(fakedReturnType) {
+    final stubValue = switch (fakedReturnType) {
       null => null,
       _ => _fakeTypeGenerator.getGetterStubValue(fakedReturnType, localName),
     };
@@ -61,11 +65,13 @@ class MethodCodeBuilder {
         ..name = localName
         ..type = MethodType.getter
         ..returns = _typeReferencer.obtainReferenceForType(
-            propertyAccessor.returnType)
+          propertyAccessor.returnType,
+        )
         ..annotations.add(const CodeExpression(Code("override")))
         ..body = Block((blockBuilder) {
           blockBuilder.addStaticCode(
-              "return noSuchMethod(Invocation.getter(#$localName)");
+            "return noSuchMethod(Invocation.getter(#$localName)",
+          );
           if (stubValue != null) {
             blockBuilder
               ..addStaticCode(", returnValueForMissingStub: ")
