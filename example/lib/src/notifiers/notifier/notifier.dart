@@ -10,6 +10,8 @@ class DummySource extends _$DummySource {
   }
 
   Future<void> someSideEffect() async {}
+
+  String get dummy => "Hello, world!";
 }
 
 @riverpod
