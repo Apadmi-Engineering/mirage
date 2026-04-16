@@ -25,7 +25,8 @@ class FakeType {
       "fakeTypeName: $fakeTypeName, originalType: $originalType"
       ")";
 
-  String allocateType(String Function(Reference) allocate, ImportFinder importFinder) {
+  String allocateType(String Function(Reference) allocate,
+      ImportFinder importFinder) {
     final parameterTypes = this.parameterTypes;
     final topLevelTypeCode = allocate(refer(
       originalType.element!.name!,
@@ -34,7 +35,8 @@ class FakeType {
     if (parameterTypes == null || parameterTypes.isEmpty) {
       return topLevelTypeCode;
     }
-    final parameterTypeCode = parameterTypes.map((type) => allocateType(allocate, importFinder)).join(", ");
+    final parameterTypeCode = parameterTypes.map((type) =>
+        type.allocateType(allocate, importFinder)).join(", ");
     return "$topLevelTypeCode<$parameterTypeCode>";
   }
 }
@@ -59,21 +61,27 @@ class RecordFakeType extends FakeType {
       ")";
 
   @override
-  String allocateType(String Function(Reference) allocate, ImportFinder importFinder) {
+  String allocateType(String Function(Reference) allocate,
+      ImportFinder importFinder) {
     final (localPositionalFields, localNamedFields) = (positionalFields, namedFields);
-    if(localPositionalFields == null && localNamedFields == null) {
+    if (localPositionalFields == null && localNamedFields == null) {
       return "()";
     }
-    final positionalFieldsCode = localPositionalFields?.map(
-        (field) => field.allocateType(allocate, importFinder)
-    ).join(",") ?? "";
-    final namedFieldsCode = localNamedFields?.entries.map(
-        (entry) => "${entry.value.allocateType(allocate, importFinder)} ${entry.key}"
-    ).join(",") ?? "";
+    final positionalFieldsCode = localPositionalFields?.takeIfNotEmpty()?.map(
+            (field) => field.allocateType(allocate, importFinder)
+    ).join(",");
+    final namedFieldsCode = localNamedFields?.entries.takeIfNotEmpty()?.map(
+            (entry) => "${entry.value.allocateType(
+            allocate, importFinder)} ${entry.key}"
+    ).join(",");
     final fieldsCode = [
-      ?positionalFieldsCode.takeIf(positionalFieldsCode.isNotEmpty),
-      ?namedFieldsCode.takeIf(namedFieldsCode.isNotEmpty),
+      ?positionalFieldsCode,
+      ?namedFieldsCode?.let((it) => "{$it}"),
     ].join(",");
     return "($fieldsCode)";
   }
+}
+
+extension <T> on Iterable<T> {
+  Iterable<T>? takeIfNotEmpty() => isNotEmpty ? this : null;
 }
