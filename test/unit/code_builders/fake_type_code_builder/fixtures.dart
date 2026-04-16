@@ -54,10 +54,7 @@ Lazy<MockParameterizedType> _futureType = Lazy(() {
 Lazy<MockParameterizedType> _streamType = Lazy(() {
   final mockLibrary = MockLibraryElement()
     ..stubReturn((it) => it.isDartCore, false)
-    ..stubReturn(
-      (it) => it.isDartAsync,
-      true,
-    );
+    ..stubReturn((it) => it.isDartAsync, true);
   final mockClassElement = MockClassElement()
     ..stubReturn((it) => it.library, mockLibrary)
     ..stubReturn((it) => it.isPublic, true);
@@ -75,7 +72,7 @@ Lazy<MockParameterizedType> _genericType = Lazy(() {
     ..stubReturn((it) => it.library, mockLibraryElement)
     ..stubReturn((it) => it.isPublic, true);
   final mockInnerType = MockDartType()
-  ..stubReturn((it) => it.element, mockInnerClassElement);
+    ..stubReturn((it) => it.element, mockInnerClassElement);
   final mockOuterClassElement = MockClassElement()
     ..stubReturn((it) => it.name, "OuterClass")
     ..stubReturn((it) => it.library, mockLibraryElement)
@@ -90,7 +87,7 @@ Lazy<MockDartType> _privateType = Lazy(() {
   final mockLibraryElement = MockLibraryElement();
   final mockInterfaceElement = MockClassElement()
     ..stubReturn((it) => it.name, "_PrivateType")
-  ..stubReturn((it) => it.library, mockLibraryElement);
+    ..stubReturn((it) => it.library, mockLibraryElement);
   return MockDartType()..stubReturn((it) => it.element, mockInterfaceElement);
 });
 
@@ -112,4 +109,22 @@ Lazy<MockDartType> _sealedType = Lazy(() {
     ..stubReturn((it) => it.isSealed, true)
     ..stubReturn((it) => it.isPublic, true);
   return MockDartType()..stubReturn((it) => it.element, mockClassElement);
+});
+
+Lazy<MockRecordType> _recordType = Lazy(() {
+  final mockLibraryElement = MockLibraryElement();
+  final mockClassElement = MockClassElement()
+    ..stubReturn((it) => it.name, "RecordType")
+    ..stubReturn((it) => it.library, mockLibraryElement)
+    ..stubReturn((it) => it.isPublic, true);
+  final mockFieldDartType = MockDartType()
+    ..stubReturn((it) => it.element, mockClassElement);
+  final mockFirstPositionalField = MockRecordTypePositionalField()
+    ..stubReturn((it) => it.type, mockFieldDartType);
+  final mockSecondPositionField = MockRecordTypePositionalField()
+    ..stubReturn((it) => it.type, mockFieldDartType);
+  return MockRecordType()..stubReturn((it) => it.positionalFields, [
+    mockFirstPositionalField,
+    mockSecondPositionField,
+  ]);
 });

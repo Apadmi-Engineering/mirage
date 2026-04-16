@@ -1,6 +1,6 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
-import 'package:code_builder/code_builder.dart';
+import 'package:code_builder/code_builder.dart' hide RecordType;
 import 'package:flumepod/src/code_builders/fake_type_code_builder.dart';
 import 'package:flumepod/src/import_finder.dart';
 import 'package:flumepod/src/models/fake_type.dart';
@@ -25,6 +25,8 @@ part 'fixtures.dart';
   MockSpec<ImportFinder>(),
   MockSpec<ParameterizedType>(),
   MockSpec<TypeParameterElement>(),
+  MockSpec<RecordType>(),
+  MockSpec<RecordTypePositionalField>()
 ])
 void main() {
   group("Fake type code builder unit tests", () {
@@ -51,6 +53,7 @@ void main() {
         _privateType(),
         _finalType(),
         _sealedType(),
+        _recordType(),
       };
 
       // Run test
@@ -65,26 +68,34 @@ void main() {
             _interfaceType().element, _interfaceType(), "_FakeMyClass"),
         FakeType(_futureType().element, _futureType(), null),
         FakeType(_streamType().element, _streamType(), null),
-        FakeType(_genericType().element, _genericType(), "_FakeOuterClass", parameterTypes: [
-          FakeType(_genericType().typeArguments.first.element,
-              _genericType().typeArguments.first, "_FakeInnerClass"),
-        ]),
+        FakeType(_genericType().element, _genericType(), "_FakeOuterClass",
+            parameterTypes: [
+              FakeType(_genericType().typeArguments.first.element,
+                  _genericType().typeArguments.first, "_FakeInnerClass"),
+            ]),
         FakeType(_privateType().element, _privateType(), null),
         FakeType(_finalType().element, _finalType(), null),
         FakeType(_sealedType().element, _sealedType(), null),
+        RecordFakeType(null, _recordType(), null, positionalFields: [
+          FakeType(_recordType().positionalFields[0].type.element,
+              _recordType().positionalFields[0].type, null),
+          FakeType(_recordType().positionalFields[1].type.element,
+              _recordType().positionalFields[1].type, null),
+        ]),
       };
       expect(
         result,
         containsAll(
           expected.map(
-            (expectedFakeType) => isA<FakeType>()
-                .having(
-                  (it) => it.fakeTypeName,
+                (expectedFakeType) =>
+                isA<FakeType>()
+                    .having(
+                      (it) => it.fakeTypeName,
                   "expected name",
                   expectedFakeType.fakeTypeName,
                 )
-                .having(
-                  (it) => it.element,
+                    .having(
+                      (it) => it.element,
                   "expected meta type",
                   expectedFakeType.element,
                 ),
