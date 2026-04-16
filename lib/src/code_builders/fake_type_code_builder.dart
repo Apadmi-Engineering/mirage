@@ -175,7 +175,7 @@ class FakeTypeCodeBuilder {
     String methodName,
   ) {
     final element = fakeType.element;
-    if (element == null && fakeType.originalType is! RecordType) {
+    if (element == null && fakeType is! RecordFakeType) {
       return null;
     } else {
       return Code.scope((allocate) {

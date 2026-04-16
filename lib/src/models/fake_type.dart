@@ -7,6 +7,8 @@ import 'package:flumepod/src/util/object_utils.dart';
 class FakeType {
   final Element? element;
   final DartType originalType;
+  // TODO(TomHa-Apadmi): This field might not be required anymore, removing it
+  // should unlock some substantial simplification.
   final String? fakeTypeName;
   final List<FakeType>? parameterTypes;
 
