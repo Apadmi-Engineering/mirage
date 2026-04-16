@@ -153,7 +153,7 @@ class FakeTypeCodeBuilder {
     String positionalArgs,
   ) {
     final element = fakeType.element;
-    if (element == null && fakeType.originalType is! RecordType) {
+    if (element == null && fakeType is! RecordFakeType) {
       return null;
     } else if (element case InterfaceElement(isFutureOrStream: true)) {
       return getMethodStubValue(
