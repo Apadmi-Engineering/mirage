@@ -25,6 +25,7 @@ dist/
 
 # JetBrains IDE
 .idea/
+melos_flumepod.iml
 
 # Unit test reports
 TEST*.xml
