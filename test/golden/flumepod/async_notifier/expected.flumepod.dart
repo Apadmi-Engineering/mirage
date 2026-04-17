@@ -11,20 +11,21 @@ import 'package:riverpod/src/framework.dart' as _i5;
 import 'package:mockito/src/dummies.dart' as _i6;
 
 // Flumepod generated mock of class [TestNotifier].
-class MockTestNotifier extends _i1.$AsyncNotifier<String>
+class MockTestNotifier extends _i1.$AsyncNotifier<(String, String)>
     with _i2.Mock
     implements _i3.TestNotifier {
   MockTestNotifier(this.seedBuilder);
 
-  _i4.FutureOr<String> Function() seedBuilder;
+  _i4.FutureOr<(String, String)> Function() seedBuilder;
 
   @override
   runBuild() {
     {
-      final ref = this.ref as _i5.$Ref<_i5.AsyncValue<String>, String>;
+      final ref = this.ref
+          as _i5.$Ref<_i5.AsyncValue<(String, String)>, (String, String)>;
       final element = ref.element as _i5.$ClassProviderElement<
-          _i5.AnyNotifier<_i5.AsyncValue<String>, String>,
-          _i5.AsyncValue<String>,
+          _i5.AnyNotifier<_i5.AsyncValue<(String, String)>, (String, String)>,
+          _i5.AsyncValue<(String, String)>,
           Object?,
           Object?>;
       element.handleCreate(ref, build);
@@ -32,7 +33,7 @@ class MockTestNotifier extends _i1.$AsyncNotifier<String>
   }
 
   @override
-  _i4.FutureOr<String> build() async {
+  _i4.FutureOr<(String, String)> build() async {
     // keepAlive() used so mock instance with stubbed/real calls isn't disposed.
     ref.keepAlive();
     return noSuchMethod(Invocation.method(#build, []),
@@ -40,13 +41,13 @@ class MockTestNotifier extends _i1.$AsyncNotifier<String>
   }
 
   @override
-  String someMethod() {
+  ({String a, String b}) someMethod() {
     return noSuchMethod(
       Invocation.method(#someMethod, []),
-      returnValueForMissingStub:
-          _i6.dummyValue<String>(this, Invocation.method(#someMethod, [])),
-      returnValue:
-          _i6.dummyValue<String>(this, Invocation.method(#someMethod, [])),
+      returnValueForMissingStub: _i6.dummyValue<({String a, String b})>(
+          this, Invocation.method(#someMethod, [])),
+      returnValue: _i6.dummyValue<({String a, String b})>(
+          this, Invocation.method(#someMethod, [])),
     );
   }
 

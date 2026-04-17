@@ -9,16 +9,16 @@ void main() {}
 @Riverpod(keepAlive: true)
 class TestNotifier extends _$TestNotifier {
   @override
-  FutureOr<String> build() async {
-    return "Dummy string";
+  FutureOr<(String, String)> build() async {
+    return ("Dummy string", "Dummy string");
   }
 
   void _privateMethod() {
 
   }
 
-  String someMethod() {
-    return "A different string";
+  ({String a, String b}) someMethod() {
+    return (a: "A different string", b: "A different string");
   }
 
   Future<int> someAsyncMethod() async {

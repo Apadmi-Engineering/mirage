@@ -1,6 +1,6 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
-import 'package:code_builder/code_builder.dart';
+import 'package:code_builder/code_builder.dart' hide RecordType;
 import 'package:flumepod/src/import_finder.dart';
 import 'package:flumepod/src/models/fake_type.dart';
 import 'package:source_gen/source_gen.dart';
@@ -63,44 +63,54 @@ class FakeTypeCodeBuilder {
     }
     final element = type.element;
     return switch (element) {
-      null => FakeType(element, type, null, []),
-      InterfaceElement(library: LibraryElement(isDartCore: true)) => FakeType(
-          element,
-          type,
-          null,
-          _getTypeParameters(type, recursionDepth + 1),
-        ),
-      InterfaceElement(library: LibraryElement(isDartAsync: true)) => FakeType(
-          element,
-          type,
-          null,
-          _getTypeParameters(type, recursionDepth + 1),
-        ),
-      EnumElement() => FakeType(element, type, null, []),
-      ClassElement(isFinal: true) => FakeType(
-          element,
-          type,
-          null,
-          _getTypeParameters(type, recursionDepth + 1),
-        ),
-      ClassElement(isSealed: true) => FakeType(
-          element,
-          type,
-          null,
-          _getTypeParameters(type, recursionDepth + 1),
-        ),
-      InterfaceElement(:final name, isPublic: true) => FakeType(
-          element,
-          type,
-          "_Fake$name",
-          _getTypeParameters(type, recursionDepth + 1),
-        ),
-      _ => FakeType(
-          element,
-          type,
-          null,
-          _getTypeParameters(type, recursionDepth + 1),
-        ),
+      _ when type is RecordType =>
+          RecordFakeType(element, type, null,
+              namedFields: _getNamedFields(type, recursionDepth + 1),
+              positionalFields: _getPositionalFields(type, recursionDepth + 1)),
+      null => FakeType(element, type, null),
+      InterfaceElement(library: LibraryElement(isDartCore: true)) =>
+          FakeType(
+            element,
+            type,
+            null,
+            parameterTypes: _getTypeParameters(type, recursionDepth + 1),
+          ),
+      InterfaceElement(library: LibraryElement(isDartAsync: true)) =>
+          FakeType(
+            element,
+            type,
+            null,
+            parameterTypes: _getTypeParameters(type, recursionDepth + 1),
+          ),
+      EnumElement() => FakeType(element, type, null),
+      ClassElement(isFinal: true) =>
+          FakeType(
+            element,
+            type,
+            null,
+            parameterTypes: _getTypeParameters(type, recursionDepth + 1),
+          ),
+      ClassElement(isSealed: true) =>
+          FakeType(
+            element,
+            type,
+            null,
+            parameterTypes: _getTypeParameters(type, recursionDepth + 1),
+          ),
+      InterfaceElement(:final name, isPublic: true) =>
+          FakeType(
+            element,
+            type,
+            "_Fake$name",
+            parameterTypes: _getTypeParameters(type, recursionDepth + 1),
+          ),
+      _ =>
+          FakeType(
+            element,
+            type,
+            null,
+            parameterTypes: _getTypeParameters(type, recursionDepth + 1),
+          ),
     };
   }
 
@@ -116,13 +126,34 @@ class FakeTypeCodeBuilder {
         .toList();
   }
 
+  List<FakeType>? _getPositionalFields(DartType type,
+      [int recursionDepth = 0]) {
+    final localType = type;
+    if (localType is! RecordType) {
+      return null;
+    }
+    return localType.positionalFields.map((positionalField) =>
+        _generateFakeType(positionalField.type, recursionDepth)).toList();
+  }
+
+  Map<String, FakeType>? _getNamedFields(DartType type,
+      [int recursionDepth = 0]) {
+    final localType = type;
+    if (localType is! RecordType) {
+      return null;
+    }
+    return Map.fromEntries(localType.namedFields.map((namedField) =>
+        MapEntry(namedField.name,
+          _generateFakeType(namedField.type, recursionDepth),),),);
+  }
+
   Code? getMethodStubValue(
     FakeType fakeType,
     String methodName,
     String positionalArgs,
   ) {
     final element = fakeType.element;
-    if (element == null) {
+    if (element == null && fakeType is! RecordFakeType) {
       return null;
     } else if (element case InterfaceElement(isFutureOrStream: true)) {
       return getMethodStubValue(
@@ -131,7 +162,7 @@ class FakeTypeCodeBuilder {
       return Code.scope((allocate) {
         final dummyInvocation =
             allocate(refer("dummyValue", "package:mockito/src/dummies.dart"));
-        final typeParam = _allocateType(fakeType, allocate);
+        final typeParam = fakeType.allocateType(allocate, _importFinder);
         final positionalParams =
             "this, Invocation.method(#$methodName, [$positionalArgs])";
         return "$dummyInvocation<$typeParam>($positionalParams)";
@@ -144,31 +175,18 @@ class FakeTypeCodeBuilder {
     String methodName,
   ) {
     final element = fakeType.element;
-    if (element == null) {
+    if (element == null && fakeType is! RecordFakeType) {
       return null;
     } else {
       return Code.scope((allocate) {
         final dummyInvocation =
             allocate(refer("dummyValue", "package:mockito/src/dummies.dart"));
-        final typeParam = _allocateType(fakeType, allocate);
+        final typeParam = fakeType.allocateType(allocate, _importFinder);
         final positionalParams =
             "this, Invocation.getter(#$methodName)";
         return "$dummyInvocation<$typeParam>($positionalParams)";
       });
     }
-  }
-
-  String _allocateType(FakeType type, String Function(Reference) allocate) {
-    final parameterTypes = type.parameterTypes;
-    final topLevelTypeCode = allocate(refer(
-      type.originalType.element!.name!,
-      _importFinder.getImportUrl(type.originalType.element!.library),
-    ));
-    if (parameterTypes == null || parameterTypes.isEmpty) {
-      return topLevelTypeCode;
-    }
-    final parameterTypeCode = parameterTypes.map((type) => _allocateType(type, allocate)).join(", ");
-    return "$topLevelTypeCode<$parameterTypeCode>";
   }
 }
 
