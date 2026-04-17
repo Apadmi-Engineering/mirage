@@ -40,3 +40,10 @@ dev_dependencies:
 
 melos:
   useRootAsPackage: true
+  command:
+    version:
+      branch: develop
+      message: |
+        {new_package_versions}
+      includeScopes: false
+      workspaceChangelog: false
