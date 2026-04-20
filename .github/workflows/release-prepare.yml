@@ -1,0 +1,30 @@
+name: Prepare release
+on:
+  push:
+    branches: [develop]
+
+jobs:
+  prepare-release:
+    name: Prepare release
+    permissions:
+      contents: write
+      pull-requests: write
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'chore(release)')"
+    steps:
+      - name: Generate token
+        id: generate-token
+        uses: actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3 #v3.1.1
+        with:
+          app-id: ${{ secrets.MELOS_APP_ID }}
+          private-key: ${{ secrets.MELOS_APP_PRIVATE_KEY }}
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+      - uses: kuhnroyal/flutter-fvm-config-action/setup@c378498f1d1962d33039c3989411093ef8a17b2c # v3.3.0
+      - uses: bluefireteam/melos-action@705015c3d2bc4ab94201ac24accb2bbe070cf533 # v3.6.0
+        with:
+          run-versioning: true
+          publish-dry-run: true
+          create-pr: true
+          token: ${{ steps.generate-token.outputs.token }}
