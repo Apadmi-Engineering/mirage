@@ -1,3 +1,10 @@
+## 1.1.0
+
+ - **FIX**: use the generated token to push tags, and align all the other workflows ([#37](https://github.com/Apadmi-Engineering/mirage/issues/37)). ([003b45a6](https://github.com/Apadmi-Engineering/mirage/commit/003b45a65364062caf8cd44400e340de58eb99b9))
+ - **FEAT**: Implement support for record return types from generated methods ([#28](https://github.com/Apadmi-Engineering/mirage/issues/28)). ([46eb0e8f](https://github.com/Apadmi-Engineering/mirage/commit/46eb0e8fc54ea84f58911a51454cb2364df5f39c))
+ - **FEAT**: Implement support for getter property accessors ([#27](https://github.com/Apadmi-Engineering/mirage/issues/27)). ([d0169b69](https://github.com/Apadmi-Engineering/mirage/commit/d0169b6986608a16797aa99e19b4150a7c0e3aa4))
+ - **DOCS**: Add doc-string comments to `Flumepod` annotation ([#33](https://github.com/Apadmi-Engineering/mirage/issues/33)). ([7a8fc759](https://github.com/Apadmi-Engineering/mirage/commit/7a8fc759bfb73d3eac4214432a98a661bb3514b6))
+
 ## 1.0.0
 
 * Fixes an issue where notifier class family argument symbols weren't being resolved and prefixed with imports ([#21](https://github.com/Apadmi-Engineering/mirage/issues/21)).
