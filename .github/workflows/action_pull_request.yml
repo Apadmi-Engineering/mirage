@@ -16,11 +16,11 @@ jobs:
         with:
           fetch-depth: 0
           token: ${{ steps.generate-token.outputs.token }}
-      - uses: kuhnroyal/flutter-fvm-config-action/setup@c378498f1d1962d33039c3989411093ef8a17b2c # v3.3.0
+      - uses: dart-lang/setup-dart@65eb853c7ba17dde3be364c3d2858773e7144260 # v1.7.2
       - name: Download dependencies and execute code generation
         run: |
-          flutter --version
-          flutter pub get
+          dart --version
+          dart pub get
           dart run build_runner build --delete-conflicting-outputs
       - name: Run unit tests
         run: |

@@ -10,11 +10,8 @@ topics:
 
 environment:
   sdk: ^3.9.0
-  flutter: ">=3.0.0"
 
 dependencies:
-  flutter:
-    sdk: flutter
   build: ^4.0.4
   mockito: ^5.4.5
   riverpod: ^3.0.0
@@ -28,8 +25,6 @@ dependencies:
   test: ^1.25.9
 
 dev_dependencies:
-  flutter_test:
-    sdk: flutter
   flutter_lints: ^6.0.0
   meta: ^1.16.0
   riverpod_generator: ^4.0.0+1
