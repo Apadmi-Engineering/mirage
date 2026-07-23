@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:code_builder/code_builder.dart';
@@ -39,11 +40,22 @@ mixin ClassCodeBuilderUtils {
 
   ClassElement getClassForType(DartType type) {
     final library = getLibraryForType(type);
-    final classElement =
-        LibraryReader(library).element.getClass(getTypeName(type));
+    final classElement = LibraryReader(
+      library,
+    ).element.getClass(getTypeName(type));
     if (classElement == null) {
       throw ClassNotFound(type);
     }
     return classElement;
+  }
+
+  Future<ResolvedLibraryResult> getResolvedClass(ClassElement element) async {
+    final resolvedClass = await element.session?.getResolvedLibraryByElement(
+      element.library,
+    );
+    if (resolvedClass is! ResolvedLibraryResult) {
+      throw StateError("Unable to resolve library for class");
+    }
+    return resolvedClass;
   }
 }

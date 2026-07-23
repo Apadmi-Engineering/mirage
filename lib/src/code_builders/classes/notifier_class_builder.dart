@@ -45,12 +45,7 @@ class NotifierClassBuilder
     ClassElement element,
     Set<FakeType> fakeTypes,
   ) async {
-    final resolvedResult = await element.session?.getResolvedLibraryByElement(
-      element.library,
-    );
-    if (resolvedResult is! ResolvedLibraryResult) {
-      throw StateError("Unable to resolve library for class");
-    }
+    final resolvedResult = await getResolvedClass(element);
     final memberCopier = _getMemberCopier(resolvedResult);
     return Class((classBuilder) {
       final typeName = getTypeName(element.thisType);
@@ -132,33 +127,32 @@ class NotifierClassBuilder
   }
 
   Future<Extension> _getMockNotifierAccessor(ClassElement element) async {
-    final resolvedClass = await element.session?.getResolvedLibraryByElement(
-      element.library,
-    );
-    if (resolvedClass is! ResolvedLibraryResult) {
-      throw StateError("Unable to resolve library for class");
-    }
+    final resolvedClass = await getResolvedClass(element);
     final notifierTypeName = getTypeName(element.thisType);
-    return Extension((eb) {
-      eb.name = "Mock${notifierTypeName}Accessor";
-      eb.on = refer("${notifierTypeName}Provider", resolvedClass.element.uri.toString());
-      eb.methods.add(
-        Method((mb) {
-          mb.name = "mock";
-          mb.type = MethodType.getter;
-          mb.returns = TypeReference(
-            (tb) => tb
-              ..symbol = "ProviderListenable"
-              ..url = "package:riverpod/misc.dart"
-              ..types.add(Reference("Mock$notifierTypeName")),
-          );
-          mb.body = Code.scope((refer) {
-            refer(Reference("select", "package:riverpod/riverpod.dart"));
-            return "return notifier.select((it) => it as Mock$notifierTypeName);";
-          });
-        }),
-      );
-    });
+    return Extension(
+      (eb) => eb
+        ..name = "Mock${notifierTypeName}Accessor"
+        ..on = refer(
+          "${notifierTypeName}Provider",
+          resolvedClass.element.uri.toString(),
+        )
+        ..methods.add(
+          Method((mb) {
+            mb.name = "mock";
+            mb.type = MethodType.getter;
+            mb.returns = TypeReference(
+              (tb) => tb
+                ..symbol = "ProviderListenable"
+                ..url = "package:riverpod/misc.dart"
+                ..types.add(Reference("Mock$notifierTypeName")),
+            );
+            mb.body = Code.scope((refer) {
+              refer(Reference("select", "package:riverpod/riverpod.dart"));
+              return "return notifier.select((it) => it as Mock$notifierTypeName);";
+            });
+          }),
+        ),
+    );
   }
 
   Set<FakeType> _generateFakeTypes(ClassElement classElement) {
