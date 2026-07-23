@@ -1,4 +1,5 @@
-A generator for creating [Mockito](https://pub.dev/packages/mockito) mocks of [Riverpod](https://riverpod.dev/) notifiers for use in unit testing.
+A generator for creating [Mockito](https://pub.dev/packages/mockito) mocks
+of [Riverpod](https://riverpod.dev/) notifiers for use in unit testing.
 
 ## Why is this needed?
 
@@ -6,12 +7,12 @@ Three parts of a good unit test are:
 
 - **Setup**  - Create the context for your unit test by stubbing dependencies.
 - **Act** - Interact with your `sut` (System Under Test) in some way.
-- **Verify** - Assert the results of **act** either by checking outputs or 
-expecting interactions with other entities.
+- **Verify** - Assert the results of **act** either by checking outputs or
+  expecting interactions with other entities.
 
-Riverpod's core unit test offering doesn't include complete utilities for 
-mocking Notifiers. That's where this package comes in, it attempts to be a 
-solution to generate Mockito mocks of Riverpod Notifiers in a way that allows 
+Riverpod's core unit test offering doesn't include complete utilities for
+mocking Notifiers. That's where this package comes in, it attempts to be a
+solution to generate Mockito mocks of Riverpod Notifiers in a way that allows
 for...
 
 - Stubbing
@@ -22,76 +23,78 @@ for...
 
 The central aim of this package is that usage is similar to that of Mockito.
 
-Add the `@Flumepod` annotation on the `main` method in your unit test file, 
-this annotation takes a single, named argument, `providerTypesToMock`. The value should 
+Add the `@Flumepod` annotation on the `main` method in your unit test file,
+this annotation takes a single, named argument, `providerTypesToMock`. The value should
 be a `Set` of `Type`s that are providers.
 
 For example...
 
 `my_notifier.dart`
+
 ```dart
 class MyNotifier extends _$MyNotifier {
-    @override
-    FutureOr<State> build() async {
-        return state;
-    }
+  @override
+  FutureOr<State> build() async {
+    return state;
+  }
 
-    void performSideEffect(Object someArg) async {
-        // Do something
-    }
+  void performSideEffect(Object someArg) async {
+    // Do something
+  }
 }
 ```
 
 Generating a mock of `MyNotifier` in a unit test would look like...
 
 > [!NOTE]
-> **1.X Migration note:** Riverpod 3.X introduces [automatic retry behaviour](https://riverpod.dev/docs/whats_new#automatic-retry) whereby providers that emit errors automatically invalidate and try again. This doesn't allow you to assert error behaviour in unit testing and so it is recommended to disable automatric retries in unit tests ([see here](https://riverpod.dev/docs/concepts2/retry#disabling-retry)).
+> **1.X Migration note:** Riverpod 3.X
+> introduces [automatic retry behaviour](https://riverpod.dev/docs/whats_new#automatic-retry) whereby
+> providers that emit errors automatically invalidate and try again. This doesn't allow you to assert
+> error behaviour in unit testing and so it is recommended to disable automatric retries in unit
+> tests ([see here](https://riverpod.dev/docs/concepts2/retry#disabling-retry)).
 
 `my_other_notifier_test.dart`
+
 ```dart
 @Flumepod(providerTypesToMock: {MyNotifier})
 void main() async {
+  test("My test", () async {
+    // Override provider with mock instance.
+    final container = ProviderContainer.test(
+      overrides: [
+        myNotifierProvider.overrideWith(MockMyNotifier(() => initialState))
+      ],
+      // You'll want to disable automatic retry to assert exception behaviour.
+      retry: (_, _) => null,
+    );
 
-    test("My test", () async {
-        // Override provider with mock instance.
-        final container = ProviderContainer.test(
-            overrides: [
-                myNotifierProvider.overrideWith(MockMyNotifier(() => initialState))
-            ],
-            // You'll want to disable automatic retry to assert exception behaviour.
-            retry: (_, _) => null,
-        );
+    // To stub (with arg matchers).
+    final myNotifier = container.read(myNotifierProvider.mock);
+    when(myNotifier.performSideEffect(any)).thenAnswer((_) async {});
 
-        // To stub (with arg matchers).
-        final myNotifier = container.read(myNotifierProvider.notifier) as MockMyNotifier;
-        when(myNotifier.performSideEffect(any)).thenAnswer((_) async {});
+    // Test something here.
 
-        // Test something here.
-
-        // Verify (with arg matchers).
-        verify(myNotifier.performSideEffect(any)).called(1);
-    });
+    // Verify (with arg matchers).
+    verify(myNotifier.performSideEffect(any)).called(1);
+  });
 }
 ```
 
-Mocks are generated in the usual way with `dart run build_runner build`, or if you're 😎, `dart run build_runner watch`.
+Note the use of `.mock` to read the mock notifier instance. Unlike `.notifier`, `.mock` returns a
+cast instance of the notifier class which allows you to use Mockito's argument matchers when 
+stubbing and verifying method calls.
+
+Mocks are generated in the usual way with `dart run build_runner build`, or if you're 😎,
+`dart run build_runner watch`.
 
 ## Considerations
 
 ### Stubbing and verifications
 
-You'll need to obtain the instance of your mocked provider through the provider container (as in the above example) to ensure you are stubbing and verifying upon the *same instance*.
-
-### Argument matchers
-
-To use argument matchers such as `any`, `anyNamed`; you'll need to obtain the instance of your notifier by reading the provider container and then casting it as the mock class.
-
-```dart
-container.read(myNotifier.notifier) as MockMyNotifier
-```
-
-This is because Mockitos argument matchers are nullable, however the parameters contained in the interface of your notifier probably aren't. Flumepod solves this by making all parameters in mock classes nullable. However, when you read your notifier from the provider container, you read it "as" the original interface. Hence, the need to cast it as the mocked version (because it is).
+You'll need to obtain the instance of your mocked provider through the provider container (as in the
+above example) to ensure you are stubbing and verifying upon the *same instance*.
 
 ## Problems
 
-If something isn't working, preferably report it [here](https://github.com/Apadmi-Engineering/mirage/issues). Contributions are welcome!
+If something isn't working, preferably report
+it [here](https://github.com/Apadmi-Engineering/mirage/issues). Contributions are welcome!
