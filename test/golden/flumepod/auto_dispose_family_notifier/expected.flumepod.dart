@@ -10,6 +10,9 @@ import 'package:riverpod_annotation/riverpod_annotation.dart' as _i4;
 import 'package:riverpod/src/framework.dart' as _i5;
 import 'package:mockito/src/dummies.dart' as _i6;
 import 'dart:async' as _i7;
+import 'asset:flumepod/test/input.dart' as _i8;
+import 'package:riverpod/misc.dart' as _i9;
+import 'package:riverpod/riverpod.dart' as _i10;
 
 // Flumepod generated mock of class [TestNotifier].
 class MockTestNotifier extends _i1.$Notifier<String>
@@ -75,5 +78,11 @@ class MockTestNotifier extends _i1.$Notifier<String>
     return noSuchMethod(
       Invocation.method(#asyncSideEffect, []),
     );
+  }
+}
+
+extension MockTestNotifierAccessor on _i8.TestNotifierProvider {
+  _i9.ProviderListenable<MockTestNotifier> get mock {
+    return notifier.select((it) => it as MockTestNotifier);
   }
 }
