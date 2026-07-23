@@ -6,8 +6,8 @@ import 'package:code_builder/code_builder.dart';
 import 'package:flumepod/src/models/errors.dart';
 import 'package:source_gen/source_gen.dart';
 
-abstract class ClassCodeBuilderDelegate {
-  FutureOr<List<Class>> generate(DartType type);
+abstract class SpecCodeBuilderDelegate {
+  FutureOr<List<Spec>> generate(DartType type);
 }
 
 mixin ClassCodeBuilderUtils {

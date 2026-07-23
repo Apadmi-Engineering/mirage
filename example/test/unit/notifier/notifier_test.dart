@@ -1,7 +1,7 @@
 import 'package:flumepod/flumepod.dart';
 import 'package:flumepod_example/src/notifiers/notifier/notifier.dart';
 import 'package:mockito/mockito.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
 import 'notifier_test.flumepod.dart';
@@ -15,7 +15,7 @@ void main() async {
         () => MockDummySource(() async => 36),
       )
     ]);
-    final mockDummySource = container.read(dummySourceProvider(6).notifier) as MockDummySource;
+    final mockDummySource = container.read(dummySourceProvider(6).mock);
     when(mockDummySource.dummy).thenReturn("Hello!");
 
     // Run test
