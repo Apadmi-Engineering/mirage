@@ -13,7 +13,7 @@ import 'package:flumepod/src/type_referencer.dart';
 
 class NotifierClassBuilder
     with ClassCodeBuilderUtils
-    implements ClassCodeBuilderDelegate {
+    implements SpecCodeBuilderDelegate {
   final FakeTypeCodeBuilder _fakeTypeCodeBuilder;
   final Function(ResolvedLibraryResult result) _getMemberCopier;
   final ImportFinder _importFinder;
@@ -31,20 +31,21 @@ class NotifierClassBuilder
   );
 
   @override
-  Future<List<Class>> generate(analyzer.DartType type) async {
+  Future<List<Spec>> generate(analyzer.DartType type) async {
     final classElement = getClassForType(type);
     final fakeTypes = _generateFakeTypes(classElement);
 
     final notifier = await _getNotifierClass(classElement, fakeTypes);
+    final mockAccessor = await _getMockNotifierAccessor(classElement);
     final fakedClasses = _generateFakeClasses(fakeTypes) ?? [];
-    return fakedClasses + [notifier];
+    return fakedClasses.cast<Spec>() + [notifier, mockAccessor];
   }
 
-  Future<Class> _getNotifierClass(ClassElement element, Set<FakeType> fakeTypes) async {
-    final resolvedResult = await element.session?.getResolvedLibraryByElement(element.library);
-    if(resolvedResult is! ResolvedLibraryResult) {
-      throw StateError("Unable to resolve library for class");
-    }
+  Future<Class> _getNotifierClass(
+    ClassElement element,
+    Set<FakeType> fakeTypes,
+  ) async {
+    final resolvedResult = await getResolvedClass(element);
     final memberCopier = _getMemberCopier(resolvedResult);
     return Class((classBuilder) {
       final typeName = getTypeName(element.thisType);
@@ -62,22 +63,25 @@ class NotifierClassBuilder
 
       for (final GetterElement getter in element.supertype?.getters ?? []) {
         final copiedGetter = memberCopier.copyGetter(getter);
-        if(copiedGetter != null) {
+        if (copiedGetter != null) {
           classBuilder.methods.add(copiedGetter);
         }
       }
 
-      for (final FieldElement field in element.supertype?.element.fields ?? []) {
+      for (final FieldElement field
+          in element.supertype?.element.fields ?? []) {
         final copiedField = memberCopier.copyField(field);
-        if(copiedField != null) {
+        if (copiedField != null) {
           classBuilder.fields.add(copiedField);
         }
       }
 
-      final runBuildMethod = element.supertype?.element.methods.where((method) => method.name == "runBuild").firstOrNull;
-      if(runBuildMethod != null) {
+      final runBuildMethod = element.supertype?.element.methods
+          .where((method) => method.name == "runBuild")
+          .firstOrNull;
+      if (runBuildMethod != null) {
         final copiedMethod = memberCopier.copyMethod(runBuildMethod, true);
-        if(copiedMethod != null) {
+        if (copiedMethod != null) {
           classBuilder.methods.add(copiedMethod);
         }
       }
@@ -89,21 +93,28 @@ class NotifierClassBuilder
           Field(
             (field) => field
               ..name = "seedBuilder"
-              ..type = (FunctionTypeBuilder()
-                    ..update(
-                      (function) => function
-                        ..returnType =
-                            _typeReferencer.obtainReferenceForType(seedType),
-                    ))
-                  .build(),
+              ..type =
+                  (FunctionTypeBuilder()..update(
+                        (function) => function
+                          ..returnType = _typeReferencer.obtainReferenceForType(
+                            seedType,
+                          ),
+                      ))
+                      .build(),
           ),
         );
-        classBuilder.constructors.add(Constructor((constructor) => constructor
-          ..requiredParameters.add(Parameter(
-            (param) => param
-              ..toThis = true
-              ..name = "seedBuilder",
-          ))));
+        classBuilder.constructors.add(
+          Constructor(
+            (constructor) => constructor
+              ..requiredParameters.add(
+                Parameter(
+                  (param) => param
+                    ..toThis = true
+                    ..name = "seedBuilder",
+                ),
+              ),
+          ),
+        );
       }
       // Add stubbed method overrides.
       classBuilder.methods.addAll(
@@ -115,9 +126,42 @@ class NotifierClassBuilder
     });
   }
 
+  Future<Extension> _getMockNotifierAccessor(ClassElement element) async {
+    final resolvedClass = await getResolvedClass(element);
+    final notifierTypeName = getTypeName(element.thisType);
+    return Extension(
+      (eb) => eb
+        ..name = "Mock${notifierTypeName}Accessor"
+        ..on = refer(
+          "${notifierTypeName}Provider",
+          resolvedClass.element.uri.toString(),
+        )
+        ..methods.add(
+          Method((mb) {
+            mb.name = "mock";
+            mb.type = MethodType.getter;
+            mb.returns = TypeReference(
+              (tb) => tb
+                ..symbol = "ProviderListenable"
+                ..url = "package:riverpod/misc.dart"
+                ..types.add(Reference("Mock$notifierTypeName")),
+            );
+            mb.body = Code.scope((refer) {
+              refer(Reference("select", "package:riverpod/riverpod.dart"));
+              return "return notifier.select((it) => it as Mock$notifierTypeName);";
+            });
+          }),
+        ),
+    );
+  }
+
   Set<FakeType> _generateFakeTypes(ClassElement classElement) {
-    final publicMethods = classElement.methods.where((method) => method.isPublic);
-    final returnTypes = publicMethods.map((method) => method.returnType).toSet();
+    final publicMethods = classElement.methods.where(
+      (method) => method.isPublic,
+    );
+    final returnTypes = publicMethods
+        .map((method) => method.returnType)
+        .toSet();
     return _fakeTypeCodeBuilder.generateFakeTypes(returnTypes);
   }
 
@@ -125,9 +169,9 @@ class NotifierClassBuilder
     final fakes = fakeTypes.where((fakeType) => fakeType.fakeTypeName != null);
     return fakes.isNotEmpty
         ? fakes
-            .map((type) => _fakeTypeCodeBuilder.buildFakeClass(type))
-            .whereType<Class>()
-            .toList()
+              .map((type) => _fakeTypeCodeBuilder.buildFakeClass(type))
+              .whereType<Class>()
+              .toList()
         : null;
   }
 }
