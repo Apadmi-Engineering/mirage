@@ -1,3 +1,8 @@
+## 1.2.0
+
+ - **FEAT**: Implement mock accessor on provider ([#44](https://github.com/Apadmi-Engineering/mirage/issues/44)). ([c1ed5267](https://github.com/Apadmi-Engineering/mirage/commit/c1ed526725e6d1e95bbe21aa56eab1a327ad6e29))
+ - **FEAT**: Remove Flutter dependency ([#41](https://github.com/Apadmi-Engineering/mirage/issues/41)). ([4a544c9d](https://github.com/Apadmi-Engineering/mirage/commit/4a544c9dec9bda336730878e55eebd83887c4212))
+
 ## 1.1.0
 
  - **FIX**: use the generated token to push tags, and align all the other workflows ([#37](https://github.com/Apadmi-Engineering/mirage/issues/37)). ([003b45a6](https://github.com/Apadmi-Engineering/mirage/commit/003b45a65364062caf8cd44400e340de58eb99b9))
