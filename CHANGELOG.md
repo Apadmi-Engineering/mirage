@@ -1,3 +1,7 @@
+## 1.3.0
+
+ - **FEAT**: Bump Dart SDK to `^3.12.0`. ([6f3b9930](https://github.com/Apadmi-Engineering/mirage/commit/6f3b99308c1603fe237b4a18fa2bdd2095fd8df6))
+
 ## 1.2.0
 
  - **FEAT**: Implement mock accessor on provider ([#44](https://github.com/Apadmi-Engineering/mirage/issues/44)). ([c1ed5267](https://github.com/Apadmi-Engineering/mirage/commit/c1ed526725e6d1e95bbe21aa56eab1a327ad6e29))
