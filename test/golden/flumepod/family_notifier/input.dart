@@ -9,6 +9,7 @@ void main() {}
 
 @Riverpod(keepAlive: true)
 class TestNotifier extends _$TestNotifier {
+  // Custom model to catch regression of #21.
   @override
   String build(Model param) {
     return "Dummy string";
