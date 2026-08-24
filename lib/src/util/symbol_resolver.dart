@@ -14,7 +14,7 @@ class SymbolResolver extends RecursiveAstVisitor {
       return;
     }
     final (name, uri) = (element.name, element.library?.uri);
-    if (name == null || uri == null || uri.scheme == _coreLibraryScheme) {
+    if (name == null || uri == null) {
       return super.visitNamedType(node);
     }
     _references.add(Reference(name, uri.toString()));
