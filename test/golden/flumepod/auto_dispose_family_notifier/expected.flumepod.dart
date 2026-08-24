@@ -32,7 +32,7 @@ class MockTestNotifier extends _i1.$Notifier<String>
       final ref = this.ref as _i5.$Ref<String, String>;
       final element = ref.element as _i5.$ClassProviderElement<
           _i5.AnyNotifier<String, String>, String, Object?, Object?>;
-      element.handleCreate(ref, () => build(_$args));
+      return element.handleCreate(ref, () => build(_$args));
     }
   }
 
