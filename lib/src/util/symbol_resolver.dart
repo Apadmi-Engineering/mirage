@@ -3,7 +3,6 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:code_builder/code_builder.dart';
 
 class SymbolResolver extends RecursiveAstVisitor {
-  static const _coreLibraryScheme = "dart";
 
   final Set<Reference> _references = {};
 
