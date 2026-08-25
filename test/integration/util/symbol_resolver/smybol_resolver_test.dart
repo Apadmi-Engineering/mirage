@@ -64,7 +64,9 @@ void main() {
         // Verify
         final actualReferences = sut.consumeReferences();
         final expectedReferences = {
-          Reference("Model", "asset:package/provider.g.dart")
+          Reference("Model", "asset:package/provider.g.dart"),
+          Reference("List", "dart:core"),
+          Reference("Future", "dart:async"),
         };
         expect(actualReferences, unorderedEquals(expectedReferences));
       });

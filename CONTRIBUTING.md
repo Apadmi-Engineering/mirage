@@ -20,6 +20,10 @@ This project is currently tested in a few ways to take both a fine-grained and h
 
 Running these all these tests locally before submission is recommended to catch any regressions.
 
+The golden tests also contain end to end examples of previous bugs in the code generator in order 
+to catch recurrences. These are highlighted with comments in each file so please be exercise 
+caution when updating these tests.
+
 ## Running tests
 
 Included in the project, there are a number of pre-configured test run configurations for Intellij (& Android Studio). Using these run configurations has the benefit of being able to use IDE tooling for debugging tests.

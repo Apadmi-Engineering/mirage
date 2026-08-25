@@ -30,7 +30,7 @@ class MockTestNotifier extends _i1.$StreamNotifier<String>
           _i5.AsyncValue<String>,
           Object?,
           Object?>;
-      element.handleCreate(ref, build);
+      return element.handleCreate(ref, build);
     }
   }
 

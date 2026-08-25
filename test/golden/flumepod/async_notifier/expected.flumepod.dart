@@ -4,39 +4,43 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:riverpod/src/providers/async_notifier.dart' as _i1;
-import 'package:mockito/mockito.dart' as _i2;
-import 'input.dart' as _i3;
-import 'dart:async' as _i4;
-import 'package:riverpod/src/framework.dart' as _i5;
-import 'package:mockito/src/dummies.dart' as _i6;
-import 'asset:flumepod/test/input.dart' as _i7;
-import 'package:riverpod/misc.dart' as _i8;
-import 'package:riverpod/riverpod.dart' as _i9;
+import 'dart:convert' as _i2;
+import 'package:mockito/mockito.dart' as _i3;
+import 'input.dart' as _i4;
+import 'dart:async' as _i5;
+import 'package:riverpod/src/framework.dart' as _i6;
+import 'package:mockito/src/dummies.dart' as _i7;
+import 'asset:flumepod/test/input.dart' as _i8;
+import 'package:riverpod/misc.dart' as _i9;
+import 'package:riverpod/riverpod.dart' as _i10;
 
 // Flumepod generated mock of class [TestNotifier].
-class MockTestNotifier extends _i1.$AsyncNotifier<(String, String)>
-    with _i2.Mock
-    implements _i3.TestNotifier {
+class MockTestNotifier
+    extends _i1.$AsyncNotifier<(_i2.Codec<dynamic, dynamic>, String)>
+    with _i3.Mock
+    implements _i4.TestNotifier {
   MockTestNotifier(this.seedBuilder);
 
-  _i4.FutureOr<(String, String)> Function() seedBuilder;
+  _i5.FutureOr<(_i2.Codec<dynamic, dynamic>, String)> Function() seedBuilder;
 
   @override
   runBuild() {
     {
-      final ref = this.ref
-          as _i5.$Ref<_i5.AsyncValue<(String, String)>, (String, String)>;
-      final element = ref.element as _i5.$ClassProviderElement<
-          _i5.AnyNotifier<_i5.AsyncValue<(String, String)>, (String, String)>,
-          _i5.AsyncValue<(String, String)>,
+      final ref = this.ref as _i6.$Ref<
+          _i6.AsyncValue<(_i2.Codec<dynamic, dynamic>, String)>,
+          (_i2.Codec<dynamic, dynamic>, String)>;
+      final element = ref.element as _i6.$ClassProviderElement<
+          _i6.AnyNotifier<_i6.AsyncValue<(_i2.Codec<dynamic, dynamic>, String)>,
+              (_i2.Codec<dynamic, dynamic>, String)>,
+          _i6.AsyncValue<(_i2.Codec<dynamic, dynamic>, String)>,
           Object?,
           Object?>;
-      element.handleCreate(ref, build);
+      return element.handleCreate(ref, build);
     }
   }
 
   @override
-  _i4.FutureOr<(String, String)> build() async {
+  _i5.FutureOr<(_i2.Codec<dynamic, dynamic>, String)> build() async {
     // keepAlive() used so mock instance with stubbed/real calls isn't disposed.
     ref.keepAlive();
     return noSuchMethod(Invocation.method(#build, []),
@@ -47,21 +51,21 @@ class MockTestNotifier extends _i1.$AsyncNotifier<(String, String)>
   ({String a, String b}) someMethod() {
     return noSuchMethod(
       Invocation.method(#someMethod, []),
-      returnValueForMissingStub: _i6.dummyValue<({String a, String b})>(
+      returnValueForMissingStub: _i7.dummyValue<({String a, String b})>(
           this, Invocation.method(#someMethod, [])),
-      returnValue: _i6.dummyValue<({String a, String b})>(
+      returnValue: _i7.dummyValue<({String a, String b})>(
           this, Invocation.method(#someMethod, [])),
     );
   }
 
   @override
-  _i4.Future<int> someAsyncMethod() async {
+  _i5.Future<int> someAsyncMethod() async {
     return noSuchMethod(
       Invocation.method(#someAsyncMethod, []),
       returnValueForMissingStub:
-          _i6.dummyValue<int>(this, Invocation.method(#someAsyncMethod, [])),
+          _i7.dummyValue<int>(this, Invocation.method(#someAsyncMethod, [])),
       returnValue:
-          _i6.dummyValue<int>(this, Invocation.method(#someAsyncMethod, [])),
+          _i7.dummyValue<int>(this, Invocation.method(#someAsyncMethod, [])),
     );
   }
 
@@ -73,15 +77,15 @@ class MockTestNotifier extends _i1.$AsyncNotifier<(String, String)>
   }
 
   @override
-  _i4.Future<void> asyncSideEffect() async {
+  _i5.Future<void> asyncSideEffect() async {
     return noSuchMethod(
       Invocation.method(#asyncSideEffect, []),
     );
   }
 }
 
-extension MockTestNotifierAccessor on _i7.TestNotifierProvider {
-  _i8.ProviderListenable<MockTestNotifier> get mock {
+extension MockTestNotifierAccessor on _i8.TestNotifierProvider {
+  _i9.ProviderListenable<MockTestNotifier> get mock {
     return notifier.select((it) => it as MockTestNotifier);
   }
 }

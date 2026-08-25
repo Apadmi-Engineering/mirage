@@ -35,7 +35,7 @@ class MockTestNotifier extends _i1.$StreamNotifier<String>
           _i6.AsyncValue<String>,
           Object?,
           Object?>;
-      element.handleCreate(ref, () => build(_$args));
+      return element.handleCreate(ref, () => build(_$args));
     }
   }
 

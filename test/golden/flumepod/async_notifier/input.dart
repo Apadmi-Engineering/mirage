@@ -1,5 +1,6 @@
 import 'package:flumepod/flumepod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'dart:convert';
 
 part 'input.g.dart';
 
@@ -8,9 +9,10 @@ void main() {}
 
 @Riverpod(keepAlive: true)
 class TestNotifier extends _$TestNotifier {
+  // Use of a `dart:convert` class to catch regression of #57.
   @override
-  FutureOr<(String, String)> build() async {
-    return ("Dummy string", "Dummy string");
+  FutureOr<(Codec, String)> build() async {
+    return (Codec(), "Dummy string");
   }
 
   void _privateMethod() {
