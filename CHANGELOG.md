@@ -1,3 +1,7 @@
+## 1.3.1
+
+ - **FIX**: Fix import prefixes for `dart:` imports ([#54](https://github.com/Apadmi-Engineering/mirage/issues/54)). ([48dd8319](https://github.com/Apadmi-Engineering/mirage/commit/48dd8319cdb900761c5bb92a91be86fbf3a0008d))
+
 ## 1.3.0
 
  - **FEAT**: Bump Dart SDK to `^3.12.0`. ([6f3b9930](https://github.com/Apadmi-Engineering/mirage/commit/6f3b99308c1603fe237b4a18fa2bdd2095fd8df6))
