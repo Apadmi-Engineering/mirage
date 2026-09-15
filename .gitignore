@@ -58,3 +58,5 @@ Thumbs.db
 # FVM Version Cache
 .fvm/
 example/android/local.properties
+
+pubspec.lock
